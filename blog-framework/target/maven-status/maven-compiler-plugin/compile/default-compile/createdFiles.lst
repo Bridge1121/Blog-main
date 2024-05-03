@@ -1,0 +1,4 @@
+com\twx\domain\entity\Article.class
+com\twx\mapper\ArticleMapper.class
+com\twx\service\ArticleService.class
+com\twx\service\impl\ArticleServiceImpl.class
