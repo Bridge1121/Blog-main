@@ -1,6 +1,7 @@
 package com.twx.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.User;
 
 
@@ -12,4 +13,9 @@ import com.twx.domain.entity.User;
  */
 public interface UserService extends IService<User> {
 
+    ResponseResult userInfo();
+
+    ResponseResult updateUserInfo(User user);
+
+    ResponseResult register(User user);
 }

@@ -1,8 +1,10 @@
 com\twx\controller\LinkController.class
 com\twx\controller\CategoryController.class
+com\twx\controller\UserController.class
 com\twx\filter\JwtAuthenticationTokenFilter.class
 com\twx\BlogApplication.class
 com\twx\controller\BlogLoginController.class
 com\twx\config\SecurityConfig.class
+com\twx\controller\UploadController.class
 com\twx\controller\CommentController.class
 com\twx\controller\ArticleController.class

@@ -20,3 +20,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+oss:
+  accessKey: BhHIt-6mmMnZWc71QewUT7pdXADu3LrCYWZzkM-R
+  secretKey: gPAA9mLdlwWvTwSb5SsxRVqdIlRIsBsChKQxK2g7
+  bucket: twxblog

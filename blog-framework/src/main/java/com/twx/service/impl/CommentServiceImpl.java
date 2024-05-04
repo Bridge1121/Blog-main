@@ -8,12 +8,15 @@ import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.Comment;
 import com.twx.domain.vo.CommentVo;
 import com.twx.domain.vo.PageVo;
+import com.twx.enums.AppHttpCodeEnum;
+import com.twx.exception.SystemException;
 import com.twx.mapper.CommentMapper;
 import com.twx.service.CommentService;
 import com.twx.service.UserService;
 import com.twx.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -52,6 +55,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
 
         return ResponseResult.okResult(new PageVo(commentVoList,page.getTotal()));
+    }
+
+    @Override
+    public ResponseResult addComment(Comment comment) {
+        //评论内容不能为空
+        if(!StringUtils.hasText(comment.getContent())){
+            throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+        save(comment);
+        return ResponseResult.okResult();
     }
 
     /**

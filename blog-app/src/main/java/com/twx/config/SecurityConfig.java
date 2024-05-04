@@ -44,6 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").anonymous()
                 //jwt过滤器测试用，如果测试没有问题吧这里删除了
 //                .antMatchers("/link/getAllLink").authenticated()
+                //个人信息接口必须登录后才能访问
+                .antMatchers("/user/userInfo").authenticated()
+                //个人信息接口必须登录后才能访问
+                .antMatchers("/comment/addComment").authenticated()
+                .antMatchers("/upload").authenticated()
                 //注销接口需要认证才能访问
                 .antMatchers("/logout").authenticated()
                 // 除上面外的所有请求全部不需要认证即可访问
