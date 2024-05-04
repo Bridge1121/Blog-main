@@ -1,3 +1,8 @@
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\ArticleController.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\config\SecurityConfig.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\CategoryController.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\BlogApplication.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\CommentController.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\BlogLoginController.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\filter\JwtAuthenticationTokenFilter.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\LinkController.java
