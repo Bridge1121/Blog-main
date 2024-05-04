@@ -1,5 +1,6 @@
 package com.twx.controller;
 
+import com.twx.annotation.SystemLog;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.User;
 import com.twx.service.UserService;
@@ -18,6 +19,7 @@ public class UserController {
     }
 
     @PutMapping("/userInfo")
+    @SystemLog(businessName = "更新用户信息")
     public ResponseResult updateUserInfo(@RequestBody User user){
         return userService.updateUserInfo(user);
     }

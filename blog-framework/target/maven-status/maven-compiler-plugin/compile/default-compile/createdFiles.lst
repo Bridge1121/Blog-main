@@ -7,6 +7,7 @@ com\twx\domain\vo\BlogUserLoginVo.class
 com\twx\domain\vo\LinkVo.class
 com\twx\exception\SystemException.class
 com\twx\domain\entity\Article.class
+com\twx\aspect\LogAspect.class
 com\twx\domain\ResponseResult.class
 com\twx\service\CategoryService.class
 com\twx\utils\WebUtils.class
@@ -45,6 +46,7 @@ com\twx\domain\vo\CommentVo.class
 com\twx\utils\BeanCopyUtils.class
 com\twx\handler\security\AccessDeniedHandlerImpl.class
 com\twx\domain\vo\HotArticleVo.class
+com\twx\annotation\SystemLog.class
 com\twx\config\MbatisPlusConfig.class
 com\twx\domain\entity\Comment.class
 com\twx\handler\exception\GlobalExceptionHandler.class

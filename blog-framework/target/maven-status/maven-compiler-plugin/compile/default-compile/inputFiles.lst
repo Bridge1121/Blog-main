@@ -35,6 +35,7 @@ D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\service\impl\
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\handler\mybatisplus\MyMetaObjectHandler.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\config\MbatisPlusConfig.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\utils\WebUtils.java
+D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\annotation\SystemLog.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\service\impl\BlogLoginServiceImpl.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\domain\entity\User.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\enums\AppHttpCodeEnum.java
@@ -51,3 +52,4 @@ D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\domain\entity
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\domain\entity\Link.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\domain\vo\PageVo.java
 D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\config\RedisConfig.java
+D:\IDEAProject\Blog\Blog-main\blog-framework\src\main\java\com\twx\aspect\LogAspect.java
