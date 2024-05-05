@@ -3,6 +3,9 @@ package com.twx.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.Category;
+import com.twx.domain.vo.CategoryVo;
+
+import java.util.List;
 
 
 /**
@@ -14,4 +17,5 @@ import com.twx.domain.entity.Category;
 public interface CategoryService extends IService<Category> {
 
     ResponseResult getCategoryList();
+
 }

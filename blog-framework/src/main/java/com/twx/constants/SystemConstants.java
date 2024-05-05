@@ -15,4 +15,6 @@ public class SystemConstants
     public static final String LINK_STATUS_NORMAL = "0";
 
     public static final int ARTICLE_ROOT_COMMENT = -1;
+    /** 正常状态 */
+    public static final String NORMAL = "0";
 }

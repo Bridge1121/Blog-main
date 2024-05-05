@@ -2,6 +2,7 @@ package com.twx.domain.entity;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -18,9 +19,9 @@ import lombok.experimental.Accessors;
  */
 @SuppressWarnings("serial")
 @Data
+@TableName("blog_article")
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("blog_article")
 @Accessors(chain = true)
 public class Article {
     @TableId
@@ -46,16 +47,24 @@ public class Article {
 
     //是否允许评论 1是，0否
     private String isComment;
-    
+
+    @TableField(fill = FieldFill.INSERT)
     private Long createBy;
-    
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
-    
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateBy;
-    
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     //删除标志（0代表未删除，1代表已删除）
     private Integer delFlag;
+
+
+
+    public Article(Long id, long viewCount) {
+        this.id = id;
+        this.viewCount = viewCount;
+    }
 
 
     public String getStatus() {

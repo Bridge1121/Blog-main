@@ -1,7 +1,11 @@
 com\twx\controller\UserController.class
 com\twx\filter\JwtAuthenticationTokenFilter.class
+com\twx\job\UpdateViewCountJob.class
+com\twx\runner\ViewCountRunner$2.class
 com\twx\config\SecurityConfig.class
 com\twx\controller\CommentController.class
+com\twx\controller\TagController.class
+com\twx\runner\ViewCountRunner.class
 com\twx\controller\ArticleController.class
 com\twx\controller\LinkController.class
 com\twx\controller\CategoryController.class
@@ -9,4 +13,5 @@ com\twx\BlogApplication.class
 com\twx\runner\TestRunner.class
 com\twx\controller\BlogLoginController.class
 com\twx\job\TestJob.class
+com\twx\runner\ViewCountRunner$1.class
 com\twx\controller\UploadController.class

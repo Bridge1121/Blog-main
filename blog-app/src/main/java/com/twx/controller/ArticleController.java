@@ -1,18 +1,19 @@
 package com.twx.controller;
 
 import com.twx.domain.ResponseResult;
+import com.twx.domain.dto.AddArticleDto;
 import com.twx.domain.entity.Article;
 import com.twx.service.ArticleService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/article")
+@Api(tags = "文章",description = "文章相关接口")
 public class ArticleController {
 
     @Autowired
@@ -23,6 +24,7 @@ public class ArticleController {
 //        return articleService.list();
 //    }
     @GetMapping("/hotArticleList")
+    @ApiOperation(value = "热门文章查询",notes = "查询热门文章列表信息")
     public ResponseResult hotArticleList(){
         //查询热门文章，封装成ResponseResult返回
         ResponseResult result = articleService.hotArticleList();
@@ -37,6 +39,16 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseResult getArticleDetail(@PathVariable("id") Long id){
         return articleService.getArticleDetail(id);
+    }
+
+    @PutMapping("/updateViewCount/{id}")
+    public ResponseResult updateViewCount(@PathVariable Long id){
+        return articleService.updateViewCount(id);
+    }
+
+    @PostMapping("/add")
+    public ResponseResult add(@RequestBody AddArticleDto articleDto){
+        return articleService.add(articleDto);
     }
 
 }
