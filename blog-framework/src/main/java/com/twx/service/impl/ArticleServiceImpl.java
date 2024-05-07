@@ -13,6 +13,8 @@ import com.twx.domain.vo.ArticleDetailVo;
 import com.twx.domain.vo.ArticleListVo;
 import com.twx.domain.vo.HotArticleVo;
 import com.twx.domain.vo.PageVo;
+import com.twx.enums.AppHttpCodeEnum;
+import com.twx.exception.SystemException;
 import com.twx.mapper.ArticleMapper;
 import com.twx.service.ArticleService;
 import com.twx.service.ArticleTagService;
@@ -45,6 +47,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private RedisCache redisCache;
     @Autowired
     private ArticleTagService articleTagService;
+    @Autowired
+    private ArticleService articleService;
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -134,6 +140,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         save(article);
         List<ArticleTag> articleTags = articleDto.getTags().stream().map(tagId -> new ArticleTag(article.getId(), tagId)).collect(Collectors.toList());
         articleTagService.saveBatch(articleTags);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteArticle(Long id) {
+        articleService.removeById(id);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult updateArticle(AddArticleDto articleDto) {
+        Article article = articleService.getById(articleDto.getId());
+        if (article.getDelFlag()==1){
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_NOT_EXISTS);
+        }
+        Article newArticle = BeanCopyUtils.copyBean(articleDto,Article.class);
+        articleMapper.updateById(newArticle);
         return ResponseResult.okResult();
     }
 }

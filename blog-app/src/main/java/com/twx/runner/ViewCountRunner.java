@@ -39,6 +39,6 @@ public class ViewCountRunner implements CommandLineRunner {
                     }
                 }));
         //存储到redis中
-        redisCache.setCacheMap("viewCount",viewCountMap);
+        redisCache.setCacheMap("article:viewCount",viewCountMap);
     }
 }
