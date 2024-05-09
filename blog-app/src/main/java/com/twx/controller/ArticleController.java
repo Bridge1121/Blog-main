@@ -32,8 +32,15 @@ public class ArticleController {
     }
 
     @GetMapping("/articleList")
+    @ApiOperation(value = "分页查询某个类型文章列表",notes = "查询某类文章列表信息")
     public ResponseResult articleList(Integer pageNum,Integer pageSize,Long categoryId){
         return articleService.articleList(pageNum,pageSize,categoryId);
+    }
+
+    @GetMapping("/draftList")
+    @ApiOperation(value = "分页查询当前用户草稿列表",notes = "查询当前用户草稿列表")
+    public ResponseResult draftArticleList(Integer pageNum,Integer pageSize,Long userId){
+        return articleService.draftArticleList(pageNum,pageSize,userId);
     }
 
     @GetMapping("/{id}")

@@ -7,9 +7,13 @@ public class SystemConstants
      */
     public static final int ARTICLE_STATUS_DRAFT = 1;
     /**
-     *  文章是正常分布状态
+     *  文章是正常发布状态
      */
     public static final int ARTICLE_STATUS_NORMAL = 0;
+    /**
+     *  文章是未分布状态
+     */
+    public static final int ARTICLE_STATUS_UNNORMAL = 1;
 
     public static final String STATUS_NORMAL = "0";
     public static final String LINK_STATUS_NORMAL = "0";

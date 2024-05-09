@@ -159,5 +159,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleMapper.updateById(newArticle);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult draftArticleList(Integer pageNum, Integer pageSize, Long userId) {
+        //查询条件
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getCreateBy,userId);
+        //状态是未发布的
+        queryWrapper.eq(Article::getStatus,SystemConstants.ARTICLE_STATUS_UNNORMAL);
+        //分页查询
+        Page<Article> page = new Page<>(pageNum,pageSize);
+        page(page, queryWrapper);
+        //查询categoryName
+        List<Article> articles = page.getRecords();
+        //用articleId查询articleName进行设置
+        for (Article article : articles) {
+            Category category = categoryService.getById(article.getCategoryId());
+            article.setCategoryName(category.getName());
+        }
+        //封装查询结果
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
+
+
+        PageVo pageVo = new PageVo(articleListVos,page.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
 }
 
