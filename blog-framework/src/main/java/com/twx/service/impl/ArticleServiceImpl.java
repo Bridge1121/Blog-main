@@ -61,7 +61,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //按照浏览量排序
         queryWrapper.orderByDesc(Article::getViewCount);
         //最多查询10条
-        Page<Article> page = new Page(1,10);
+        Page<Article> page = new Page(1,20);
         page(page,queryWrapper);
         List<Article> articles = page.getRecords();
         List<HotArticleVo> articleVos = new ArrayList<>();
@@ -184,5 +184,27 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
     }
+
+    //模糊查询文章
+    @Override
+    public ResponseResult searchArticle(Integer pageNum, Integer pageSize, String content) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Article::getTitle,content).or().like(Article::getSummary,content).or().like(Article::getContent,content);
+        Page<Article> page = new Page<>(pageNum,pageSize);
+        page(page, queryWrapper);
+        //查询categoryName
+        List<Article> articles = page.getRecords();
+        //用articleId查询articleName进行设置
+        for (Article article : articles) {
+            Category category = categoryService.getById(article.getCategoryId());
+            article.setCategoryName(category.getName());
+        }
+        //封装查询结果
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
+        PageVo pageVo = new PageVo(articleListVos,page.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+
 }
 

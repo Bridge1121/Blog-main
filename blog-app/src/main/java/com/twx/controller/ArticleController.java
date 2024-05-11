@@ -68,4 +68,9 @@ public class ArticleController {
         return articleService.updateArticle(articleDto);
     }
 
+    @GetMapping("/searchArticle")
+    public ResponseResult searchArticle(Integer pageNum,Integer pageSize,String content){
+        return articleService.searchArticle(pageNum,pageSize,content);
+    }
+
 }
