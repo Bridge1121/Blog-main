@@ -73,6 +73,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //对密码进行加密
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
+        if(!StringUtils.hasText(user.getAvatar())){
+            //上传默认头像
+            user.setAvatar("http://scy727740.hd-bkt.clouddn.com/2024/05/11/5ea2264b4dc34664a7c65b69af1901c0.png");
+        }
         //存入数据库
         save(user);
         return ResponseResult.okResult();
