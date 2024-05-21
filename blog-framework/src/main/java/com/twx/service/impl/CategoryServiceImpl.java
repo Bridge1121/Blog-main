@@ -30,12 +30,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
-    public ResponseResult getCategoryList() {
-        //查询文章表状态为已发布的文章
+    public ResponseResult getCategoryList(String userId) {
+        //查询当前用户文章表状态为已发布的文章
         LambdaQueryWrapper<Article> articleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         articleLambdaQueryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
+        articleLambdaQueryWrapper.eq(Article::getCreateBy,userId);
         List<Article> articleList = articleService.list(articleLambdaQueryWrapper);
         //获取文章的分类id，去重
         Set<Long> categoryIds = articleList.stream()
@@ -51,6 +54,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(categories, CategoryVo.class);
         return ResponseResult.okResult(categoryVos);
     }
+
+    @Override
+    public ResponseResult addCategory(String name, String userId, String description) {
+        Category category = new Category(name,description,Long.parseLong(userId),Long.parseLong(userId));
+        categoryService.save(category);
+        return ResponseResult.okResult();
+    }
+
+
 
 }
 
