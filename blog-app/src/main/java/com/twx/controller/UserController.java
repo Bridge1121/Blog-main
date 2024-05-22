@@ -22,7 +22,7 @@ public class UserController {
         return userService.userInfo();
     }
 
-    @PutMapping("/userInfo")
+    @PutMapping("/updateUserInfo")
     @SystemLog(businessName = "更新用户信息")
     @ApiOperation(value = "更新用户信息",notes = "更新用户当前个人信息")
     public ResponseResult updateUserInfo(@RequestBody User user){

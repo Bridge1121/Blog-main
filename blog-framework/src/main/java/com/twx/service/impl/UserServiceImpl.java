@@ -1,6 +1,7 @@
 package com.twx.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.User;
@@ -24,6 +25,11 @@ import org.springframework.util.StringUtils;
  */
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseResult userInfo() {
@@ -38,12 +44,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResponseResult updateUserInfo(User user) {
-        updateById(user);
+        //更新局部字段
+        LambdaUpdateWrapper<User> userUpdateWrapper = new LambdaUpdateWrapper<>();
+        userUpdateWrapper.set(User::getNickName, user.getNickName());
+        userUpdateWrapper.set(User::getAvatar, user.getAvatar());
+        userUpdateWrapper.set(User::getSex, user.getSex());
+        userUpdateWrapper.set(User::getEmail, user.getEmail());
+//        if (!StringUtils.isEmpty(user.getPassword())) {
+//            userUpdateWrapper.set(User::getPassword, passwordEncoder.encode(user.getPassword()));
+//        }
+        userUpdateWrapper.eq(User::getId, user.getId());
+        userMapper.update(null, userUpdateWrapper);
         return ResponseResult.okResult();
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public ResponseResult register(User user) {
