@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/userInfo").authenticated()
                 .antMatchers("/content/tag/addTag").authenticated()
                 //个人信息接口必须登录后才能访问
+                .antMatchers("/comment/commentList").authenticated()
                 .antMatchers("/comment").authenticated()
                 .antMatchers("/upload").authenticated()
                 .antMatchers("/article/add").authenticated()
