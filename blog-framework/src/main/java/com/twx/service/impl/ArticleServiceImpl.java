@@ -1,6 +1,7 @@
 package com.twx.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
@@ -113,7 +114,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Article article = getById(id);
         //从redis中获取viewCount
         Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
-        article.setViewCount(viewCount.longValue());
+        if (viewCount!=null){
+            article.setViewCount(viewCount.longValue());
+        }else{
+            article.setViewCount(new Long(0));
+        }
+
         //转换成vo
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         //根据分类id查询分类名
@@ -155,8 +161,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if (article.getDelFlag()==1){
             throw new SystemException(AppHttpCodeEnum.ARTICLE_NOT_EXISTS);
         }
-        Article newArticle = BeanCopyUtils.copyBean(articleDto,Article.class);
-        articleMapper.updateById(newArticle);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(Article::getCategoryId,articleDto.getCategoryId());
+        updateWrapper.set(Article::getTitle,articleDto.getTitle());
+        updateWrapper.set(Article::getThumbnail,articleDto.getThumbnail());
+        updateWrapper.set(Article::getContent,articleDto.getContent());
+        updateWrapper.eq(Article::getId,articleDto.getId());
+        articleMapper.update(null,updateWrapper);
+//        Article newArticle = BeanCopyUtils.copyBean(articleDto,Article.class);
+//        articleMapper.updateById(newArticle);
         return ResponseResult.okResult();
     }
 

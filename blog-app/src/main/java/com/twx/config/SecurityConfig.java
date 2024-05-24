@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/article/add").authenticated()
                 .antMatchers("/article/deleteArticle").authenticated()
                 .antMatchers("/article/updateArticle").authenticated()
+                .antMatchers("/article/draftList").authenticated()
                 //注销接口需要认证才能访问
                 .antMatchers("/logout").authenticated()
                 .antMatchers("/category").authenticated()
