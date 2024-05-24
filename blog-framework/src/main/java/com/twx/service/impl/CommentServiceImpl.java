@@ -1,13 +1,13 @@
 package com.twx.service.impl;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.Comment;
-import com.twx.domain.vo.CommentVo;
-import com.twx.domain.vo.PageVo;
+import com.twx.domain.vo.*;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
 import com.twx.mapper.CommentMapper;
@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 评论表(Comment)表服务实现类
@@ -34,27 +36,28 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Override
     public ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize) {
-        //查询对应文章的根评论
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        //对articleId进行判断
-        queryWrapper.eq(Comment::getArticleId,articleId);
-        //根评论 rootId为-1
-        queryWrapper.eq(Comment::getRootId,-1);
+        queryWrapper.eq(Comment::getArticleId, articleId);
+        queryWrapper.eq(Comment::getRootId, -1);
 
-        //分页查询
-        Page<Comment> page = new Page(pageNum,pageSize);
-        page(page,queryWrapper);
+        Page<Comment> page = new Page<>(pageNum, pageSize);
+        page(page, queryWrapper);
 
         List<CommentVo> commentVoList = toCommentVoList(page.getRecords());
-        //查询所有根评论对应的子评论集合，并赋值给根评论
-        for (CommentVo commentVo : commentVoList) {
-            //查询对应的子评论
-            List<CommentVo> children = getChildren(commentVo.getId());
-            //赋值
-            commentVo.setChildren(children);
-        }
 
-        return ResponseResult.okResult(new PageVo(commentVoList,page.getTotal()));
+        for (CommentVo commentVo : commentVoList) {
+            List<CommentReplyVo> children = getChildren(commentVo.getId());
+            commentVo.setReplies(children);
+            commentVo.setCurrentPage(pageNum);
+            commentVo.setPageSize(pageSize);
+            commentVo.setTotalPages((int) page.getPages());
+            commentVo.setTotalDataSize((int) page.getTotal());
+            commentVo.setNextPage(page.hasNext() ? (int) (page.getCurrent() + 1) : -1);
+            commentVo.setPrefPage(page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1);
+
+        }
+        return ResponseResult.okResult(new PagerEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1));
+
     }
 
     @Override
@@ -72,14 +75,31 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @param id 根评论的id
      * @return
      */
-    private List<CommentVo> getChildren(Long id) {
+    private List<CommentReplyVo> getChildren(Long id) {
 
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getRootId,id);
         queryWrapper.orderByAsc(Comment::getCreateTime);
         List<Comment> comments = list(queryWrapper);
 
-        List<CommentVo> commentVos = toCommentVoList(comments);
+        List<CommentReplyVo> commentVos = toCommentReplyVoList(comments);
+        return commentVos;
+    }
+
+    private List<CommentReplyVo> toCommentReplyVoList(List<Comment> list){
+        List<CommentReplyVo> commentVos = BeanCopyUtils.copyBeanList(list, CommentReplyVo.class);
+        //遍历vo集合
+        for (CommentReplyVo commentVo : commentVos) {
+            //通过creatyBy查询用户的昵称并赋值
+            String nickName = userService.getById(commentVo.getCreateBy()).getNickName();
+            commentVo.setUserName(nickName);
+            //通过toCommentUserId查询用户的昵称并赋值
+            //如果toCommentUserId不为-1才进行查询
+            if(commentVo.getToCommentUserId()!=-1){
+                String toCommentUserName = userService.getById(commentVo.getToCommentUserId()).getNickName();
+                commentVo.setToCommentUserName(toCommentUserName);
+            }
+        }
         return commentVos;
     }
 

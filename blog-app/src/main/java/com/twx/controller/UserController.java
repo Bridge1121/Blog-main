@@ -34,4 +34,9 @@ public class UserController {
     public ResponseResult register(@RequestBody User user){
         return userService.register(user);
     }
+
+    @GetMapping("/getAvatar")
+    public ResponseResult getAvatar(Long userId){
+        return userService.getAvatar(userId);
+    }
 }

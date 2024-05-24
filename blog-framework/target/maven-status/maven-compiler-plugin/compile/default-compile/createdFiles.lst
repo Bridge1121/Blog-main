@@ -14,7 +14,9 @@ com\twx\service\impl\ArticleTagServiceImpl.class
 com\twx\aspect\LogAspect.class
 com\twx\domain\ResponseResult.class
 com\twx\service\CategoryService.class
+com\twx\domain\vo\PagerEnableVo.class
 com\twx\utils\WebUtils.class
+com\twx\domain\vo\PagerEnable.class
 com\twx\config\FastJsonRedisSerializer.class
 com\twx\domain\vo\PageVo.class
 com\twx\mapper\ArticleMapper.class
@@ -37,6 +39,7 @@ com\twx\domain\dto\TagListDto.class
 com\twx\mapper\CategoryMapper.class
 com\twx\service\impl\ArticleServiceImpl.class
 com\twx\domain\vo\CategoryVo.class
+com\twx\domain\vo\CommentReplyVo.class
 com\twx\service\impl\OssUploadService.class
 com\twx\service\impl\BlogLoginServiceImpl.class
 com\twx\utils\RedisCache.class

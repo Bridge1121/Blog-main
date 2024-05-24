@@ -97,6 +97,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.okResult();
     }
 
+    @Override
+    public ResponseResult getAvatar(Long userId) {
+//        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(User::getId,userId);
+        User user = getById(userId);
+        return ResponseResult.okResult(user.getAvatar());
+    }
+
     private boolean emailExist(String email) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail,email);
