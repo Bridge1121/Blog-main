@@ -21,6 +21,12 @@ public class CommentController {
         return commentService.commentList(articleId,pageNum,pageSize);
     }
 
+    @GetMapping("/replyList")
+    @ApiOperation(value = "获取当前评论的子评论列表",notes = "获取当前评论的子评论")
+    public ResponseResult replyList(Long commentId,Integer pageNum,Integer pageSize){
+        return commentService.replyList(commentId,pageNum,pageSize);
+    }
+
     @PostMapping
     @ApiOperation(value = "发表评论",notes = "对当前文章发表评论")
     public ResponseResult addComment(@RequestBody Comment comment){

@@ -34,6 +34,7 @@ public class Comment  {
     private Long rootId;
     //评论内容
     private String content;
+    private int prizes;//当前评论点赞数
     //所回复的目标评论的userid
     private Long toCommentUserId;
     //回复目标评论id
@@ -48,6 +49,14 @@ public class Comment  {
     private Date updateTime;
     //删除标志（0代表未删除，1代表已删除）
     private Integer delFlag;
+
+    public int getPrizes() {
+        return prizes;
+    }
+
+    public void setPrizes(int prizes) {
+        this.prizes = prizes;
+    }
 
     public Long getId() {
         return id;

@@ -24,6 +24,7 @@ public class CommentVo {
     private String toCommentUserName;
     //回复目标评论id
     private Long toCommentId;
+    private int prizes;//当前评论点赞数
 
     private Long createBy;
 
@@ -56,6 +57,14 @@ public class CommentVo {
      * 上一个页码
      */
     public int prefPage;
+
+    public int getPrizes() {
+        return prizes;
+    }
+
+    public void setPrizes(int prizes) {
+        this.prizes = prizes;
+    }
 
     public int getCurrentPage() {
         return currentPage;

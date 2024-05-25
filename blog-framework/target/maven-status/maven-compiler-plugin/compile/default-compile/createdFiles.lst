@@ -57,6 +57,7 @@ com\twx\domain\entity\User.class
 com\twx\enums\AppHttpCodeEnum.class
 com\twx\mapper\TagMapper.class
 com\twx\domain\vo\CommentVo.class
+com\twx\domain\vo\PagerRepliesEnableVo.class
 com\twx\utils\BeanCopyUtils.class
 com\twx\handler\security\AccessDeniedHandlerImpl.class
 com\twx\domain\vo\HotArticleVo.class

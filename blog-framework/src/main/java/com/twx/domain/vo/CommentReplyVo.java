@@ -24,6 +24,7 @@ public class CommentReplyVo {
     private String toCommentUserName;
     //回复目标评论id
     private Long toCommentId;
+    private int prizes;//当前评论点赞数
 
     private Long createBy;
 
@@ -39,6 +40,14 @@ public class CommentReplyVo {
 
     public void setReplies(List<CommentReplyVo> replies) {
         this.replies = replies;
+    }
+
+    public int getPrizes() {
+        return prizes;
+    }
+
+    public void setPrizes(int prizes) {
+        this.prizes = prizes;
     }
 
     public Long getId() {

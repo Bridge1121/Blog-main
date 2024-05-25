@@ -46,14 +46,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<CommentVo> commentVoList = toCommentVoList(page.getRecords());
 
         for (CommentVo commentVo : commentVoList) {
-            List<CommentReplyVo> children = getChildren(commentVo.getId());
-            commentVo.setReplies(children);
-            commentVo.setCurrentPage(pageNum);
-            commentVo.setPageSize(pageSize);
-            commentVo.setTotalPages((int) page.getPages());
-            commentVo.setTotalDataSize((int) page.getTotal());
-            commentVo.setNextPage(page.hasNext() ? (int) (page.getCurrent() + 1) : -1);
-            commentVo.setPrefPage(page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1);
+            PagerRepliesEnableVo children = getChildren(1,2,commentVo.getId());//第一次找当前评论的子评论时只找第一页的前两条
+            commentVo.setReplies(children.getReplies());
+            commentVo.setCurrentPage(children.getCurrentPage());
+            commentVo.setPageSize(children.getPageSize());
+            commentVo.setTotalPages(children.getTotalPages());
+            commentVo.setTotalDataSize(children.getTotalDataSize());
+            commentVo.setNextPage(children.getCurrentPage()<children.getTotalPages() ? (int) (page.getCurrent() + 1) : -1);
+            commentVo.setPrefPage(children.getCurrentPage()>1 ? (int) (page.getCurrent() - 1) : -1);
 
         }
         return ResponseResult.okResult(new PagerEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1));
@@ -70,20 +70,36 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return ResponseResult.okResult();
     }
 
+    @Override
+    public ResponseResult replyList(Long commentId, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getRootId,commentId);
+        queryWrapper.orderByAsc(Comment::getCreateTime);
+        Page<Comment> page = new Page<>(pageNum, pageSize);
+        page(page, queryWrapper);
+        List<CommentReplyVo> commentVoList = toCommentReplyVoList(page.getRecords());
+
+//        List<CommentReplyVo> commentVos = toCommentReplyVoList(commentVoList);
+        return ResponseResult.okResult(new PagerRepliesEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1));
+    }
+
     /**
      * 根据根评论的id查询所对应的子评论的集合
      * @param id 根评论的id
      * @return
      */
-    private List<CommentReplyVo> getChildren(Long id) {
+    private PagerRepliesEnableVo getChildren(int pageNum,int pageSize,Long id) {
 
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getRootId,id);
         queryWrapper.orderByAsc(Comment::getCreateTime);
-        List<Comment> comments = list(queryWrapper);
+        Page<Comment> page = new Page<>(pageNum, pageSize);
+        page(page, queryWrapper);
 
-        List<CommentReplyVo> commentVos = toCommentReplyVoList(comments);
-        return commentVos;
+        List<CommentReplyVo> commentVoList = toCommentReplyVoList(page.getRecords());
+
+//        List<CommentReplyVo> commentVos = toCommentReplyVoList(commentVoList);
+        return new PagerRepliesEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1);
     }
 
     private List<CommentReplyVo> toCommentReplyVoList(List<Comment> list){
