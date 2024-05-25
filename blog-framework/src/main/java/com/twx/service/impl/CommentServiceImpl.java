@@ -2,6 +2,7 @@ package com.twx.service.impl;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
@@ -81,6 +82,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
 //        List<CommentReplyVo> commentVos = toCommentReplyVoList(commentVoList);
         return ResponseResult.okResult(new PagerRepliesEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1));
+    }
+
+    @Override
+    public ResponseResult addPrize(int commentId) {
+        Comment comment = getById(commentId);
+        LambdaUpdateWrapper<Comment> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Comment::getId,commentId);
+        updateWrapper.set(Comment::getPrizes,comment.getPrizes()+1);
+        update(null,updateWrapper);
+        return ResponseResult.okResult();
     }
 
     /**

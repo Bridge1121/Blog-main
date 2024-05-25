@@ -18,4 +18,6 @@ public interface CommentService extends IService<Comment> {
     ResponseResult addComment(Comment comment);
 
     ResponseResult replyList(Long commentId, Integer pageNum, Integer pageSize);
+
+    ResponseResult addPrize(int commentId);
 }

@@ -33,4 +33,9 @@ public class CommentController {
         return commentService.addComment(comment);
     }
 
+    @GetMapping("/addPrize")
+    public ResponseResult addPrize(int commentId){
+        return commentService.addPrize(commentId);
+    }
+
 }
