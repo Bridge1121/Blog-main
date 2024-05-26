@@ -31,8 +31,17 @@ public class CommentReplyVo {
     private Date createTime;
 
     private String userName;//评论人用户名
+
+    private boolean isPrize;//当前登录用户是否对该评论点赞
     private List<CommentReplyVo> replies;
 
+    public boolean isPrize() {
+        return isPrize;
+    }
+
+    public void setPrize(boolean prize) {
+        isPrize = prize;
+    }
 
     public List<CommentReplyVo> getReplies() {
         return replies;

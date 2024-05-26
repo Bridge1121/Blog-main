@@ -32,6 +32,7 @@ public class CommentVo {
 
     private String userName;//评论人用户名
     private List<CommentReplyVo> replies;
+    private boolean isPraise;//当前用户是否对该评论点赞过
 
     /**
      * 当前页码
@@ -57,6 +58,14 @@ public class CommentVo {
      * 上一个页码
      */
     public int prefPage;
+
+    public boolean isPraise() {
+        return isPraise;
+    }
+
+    public void setPraise(boolean praise) {
+        isPraise = praise;
+    }
 
     public int getPrizes() {
         return prizes;

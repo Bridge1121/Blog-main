@@ -17,14 +17,14 @@ public class CommentController {
 
     @GetMapping("/commentList")
     @ApiOperation(value = "获取评论列表",notes = "获取当前文章所有评论")
-    public ResponseResult commentList(Long articleId,Integer pageNum,Integer pageSize){
-        return commentService.commentList(articleId,pageNum,pageSize);
+    public ResponseResult commentList(Long currentUserId,Long articleId,Integer pageNum,Integer pageSize){
+        return commentService.commentList(currentUserId,articleId,pageNum,pageSize);
     }
 
     @GetMapping("/replyList")
     @ApiOperation(value = "获取当前评论的子评论列表",notes = "获取当前评论的子评论")
-    public ResponseResult replyList(Long commentId,Integer pageNum,Integer pageSize){
-        return commentService.replyList(commentId,pageNum,pageSize);
+    public ResponseResult replyList(Long currentUserId,Long commentId,Integer pageNum,Integer pageSize){
+        return commentService.replyList(currentUserId,commentId,pageNum,pageSize);
     }
 
     @PostMapping
@@ -34,8 +34,13 @@ public class CommentController {
     }
 
     @GetMapping("/addPrize")
-    public ResponseResult addPrize(int commentId){
-        return commentService.addPrize(commentId);
+    public ResponseResult addPrize(Long currentUserId,Long commentId){
+        return commentService.addPrize(currentUserId,commentId);
+    }
+
+    @DeleteMapping("/deletePrize")
+    public ResponseResult deletePrize(Long currentUserId,Long commentId){
+        return commentService.deletePrize(currentUserId,commentId);
     }
 
 }

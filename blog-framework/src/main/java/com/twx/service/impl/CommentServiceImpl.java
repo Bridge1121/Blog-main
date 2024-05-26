@@ -8,11 +8,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.Comment;
+import com.twx.domain.entity.UserPraiseComment;
 import com.twx.domain.vo.*;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
 import com.twx.mapper.CommentMapper;
+import com.twx.mapper.UserPraiseCommentMapper;
 import com.twx.service.CommentService;
+import com.twx.service.UserPraiseCommentService;
 import com.twx.service.UserService;
 import com.twx.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +38,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserPraiseCommentService userPraiseCommentService;
+
+    @Autowired
+    private UserPraiseCommentMapper userPraiseCommentMapper;
+
+
+
+
     @Override
-    public ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize) {
+    public ResponseResult commentList(Long currentUserId,Long articleId, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getArticleId, articleId);
         queryWrapper.eq(Comment::getRootId, -1);
@@ -47,7 +59,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<CommentVo> commentVoList = toCommentVoList(page.getRecords());
 
         for (CommentVo commentVo : commentVoList) {
-            PagerRepliesEnableVo children = getChildren(1,2,commentVo.getId());//第一次找当前评论的子评论时只找第一页的前两条
+            commentVo.setPraise(isPraise(commentVo.getId(),currentUserId));
+            PagerRepliesEnableVo children = getChildren(1,2,commentVo.getId(),currentUserId);//第一次找当前评论的子评论时只找第一页的前两条
             commentVo.setReplies(children.getReplies());
             commentVo.setCurrentPage(children.getCurrentPage());
             commentVo.setPageSize(children.getPageSize());
@@ -72,24 +85,43 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
-    public ResponseResult replyList(Long commentId, Integer pageNum, Integer pageSize) {
+    public ResponseResult replyList(Long currentUserId,Long commentId, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getRootId,commentId);
         queryWrapper.orderByAsc(Comment::getCreateTime);
         Page<Comment> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
         List<CommentReplyVo> commentVoList = toCommentReplyVoList(page.getRecords());
+        for (CommentReplyVo commentReplyVo:commentVoList){
+            commentReplyVo.setPrize(isPraise(commentReplyVo.getId(),currentUserId));
+        }
 
 //        List<CommentReplyVo> commentVos = toCommentReplyVoList(commentVoList);
         return ResponseResult.okResult(new PagerRepliesEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1));
     }
 
     @Override
-    public ResponseResult addPrize(int commentId) {
+    public ResponseResult addPrize(Long currentUserId,Long commentId) {
         Comment comment = getById(commentId);
         LambdaUpdateWrapper<Comment> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Comment::getId,commentId);
         updateWrapper.set(Comment::getPrizes,comment.getPrizes()+1);
+        update(null,updateWrapper);
+        UserPraiseComment userPraiseComment = new UserPraiseComment(currentUserId,commentId);
+        userPraiseCommentService.save(userPraiseComment);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deletePrize(Long currentUserId, Long commentId) {
+        LambdaQueryWrapper<UserPraiseComment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserPraiseComment::getCommentid,commentId);
+        queryWrapper.eq(UserPraiseComment::getUserid,currentUserId);
+        userPraiseCommentMapper.delete(queryWrapper);
+        Comment comment = getById(commentId);
+        LambdaUpdateWrapper<Comment> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Comment::getId,commentId);
+        updateWrapper.set(Comment::getPrizes,comment.getPrizes()-1);
         update(null,updateWrapper);
         return ResponseResult.okResult();
     }
@@ -99,15 +131,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @param id 根评论的id
      * @return
      */
-    private PagerRepliesEnableVo getChildren(int pageNum,int pageSize,Long id) {
+    private PagerRepliesEnableVo getChildren(int pageNum,int pageSize,Long id,Long currentUserId) {
 
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getRootId,id);
         queryWrapper.orderByAsc(Comment::getCreateTime);
         Page<Comment> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
-
         List<CommentReplyVo> commentVoList = toCommentReplyVoList(page.getRecords());
+        for(int i =0;i<commentVoList.size();i++){//判断每条回复是否被当前用户点赞过
+            commentVoList.get(i).setPrize(isPraise(commentVoList.get(i).getId(),currentUserId));
+        }
 
 //        List<CommentReplyVo> commentVos = toCommentReplyVoList(commentVoList);
         return new PagerRepliesEnableVo(commentVoList,pageNum,pageSize,(int) page.getPages(),(int) page.getTotal(),page.hasNext() ? (int) (page.getCurrent() + 1) : -1,page.hasPrevious() ? (int) (page.getCurrent() - 1) : -1);
@@ -145,6 +179,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             }
         }
         return commentVos;
+    }
+
+    //判断当前评论是否被当前登录用户点赞
+    private boolean isPraise(Long commentId,Long currentUserId){
+        LambdaQueryWrapper<UserPraiseComment> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(UserPraiseComment::getCommentid,commentId);
+        queryWrapper1.eq(UserPraiseComment::getUserid,currentUserId);
+        List<UserPraiseComment> userPraiseComments = userPraiseCommentService.list(queryWrapper1);
+        if (userPraiseComments.size()==0){
+            return false;
+        }
+        return true;
     }
 }
 

@@ -13,11 +13,13 @@ import com.twx.domain.entity.Comment;
  */
 public interface CommentService extends IService<Comment> {
 
-    ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize);
+    ResponseResult commentList(Long currentUserId,Long articleId, Integer pageNum, Integer pageSize);
 
     ResponseResult addComment(Comment comment);
 
-    ResponseResult replyList(Long commentId, Integer pageNum, Integer pageSize);
+    ResponseResult replyList(Long currentUserId,Long commentId, Integer pageNum, Integer pageSize);
 
-    ResponseResult addPrize(int commentId);
+    ResponseResult addPrize(Long currentUserId,Long commentId);
+
+    ResponseResult deletePrize(Long currentUserId, Long commentId);
 }
