@@ -22,4 +22,10 @@ public class UploadController {
     public ResponseResult uploadImg(MultipartFile img){
         return uploadService.uploadImg(img);
     }
+
+    @PostMapping("/uploadImages")
+    @ApiOperation(value = "上传多张图片",notes = "上传相关图片")
+    public ResponseResult uploadImages(MultipartFile[] imgs){
+        return uploadService.uploadImages(imgs);
+    }
 }

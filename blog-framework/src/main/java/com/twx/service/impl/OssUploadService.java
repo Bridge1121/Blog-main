@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Data
@@ -38,6 +40,24 @@ public class OssUploadService implements UploadService {
         String filePath = PathUtils.generateFilePath(originalFilename);
         String url = uploadOss(img,filePath);//  2099/2/3/wqeqeqe.png
         return ResponseResult.okResult(url);
+    }
+
+    @Override
+    public ResponseResult uploadImages(MultipartFile[] imgs) {
+        List<String> images = new ArrayList<>();
+        for (MultipartFile img:imgs){
+            String originalFilename = img.getOriginalFilename();
+            //对原始文件名进行判断
+            if(!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png")){
+                throw new SystemException(AppHttpCodeEnum.FILE_TYPE_ERROR);
+            }
+
+            //如果判断通过上传文件到OSS
+            String filePath = PathUtils.generateFilePath(originalFilename);
+            String url = uploadOss(img,filePath);//  2099/2/3/wqeqeqe.png
+            images.add(url);
+        }
+        return ResponseResult.okResult(String.join(",",images));
     }
 
     private String accessKey;
