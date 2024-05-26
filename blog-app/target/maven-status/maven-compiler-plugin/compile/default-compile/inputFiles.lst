@@ -13,3 +13,4 @@ D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\BlogApplication.jav
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\CommentController.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\BlogLoginController.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\filter\JwtAuthenticationTokenFilter.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\UserPostingsController.java

@@ -12,6 +12,7 @@ com\twx\controller\CategoryController.class
 com\twx\BlogApplication.class
 com\twx\runner\TestRunner.class
 com\twx\controller\BlogLoginController.class
+com\twx\controller\UserPostingsController.class
 com\twx\job\TestJob.class
 com\twx\runner\ViewCountRunner$1.class
 com\twx\controller\UploadController.class
