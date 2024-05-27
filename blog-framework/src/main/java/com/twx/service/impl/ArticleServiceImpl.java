@@ -7,19 +7,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.dto.AddArticleDto;
-import com.twx.domain.entity.Article;
-import com.twx.domain.entity.ArticleTag;
-import com.twx.domain.entity.Category;
-import com.twx.domain.vo.ArticleDetailVo;
-import com.twx.domain.vo.ArticleListVo;
-import com.twx.domain.vo.HotArticleVo;
-import com.twx.domain.vo.PageVo;
+import com.twx.domain.entity.*;
+import com.twx.domain.vo.*;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
 import com.twx.mapper.ArticleMapper;
-import com.twx.service.ArticleService;
-import com.twx.service.ArticleTagService;
-import com.twx.service.CategoryService;
+import com.twx.mapper.UserFavoritesMapper;
+import com.twx.mapper.UserLikeArticleMapper;
+import com.twx.service.*;
 import com.twx.utils.BeanCopyUtils;
 import com.twx.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
@@ -52,6 +47,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private ArticleService articleService;
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserLikeArticleService userLikeArticleService;
+    @Autowired
+    private UserLikeArticleMapper userLikeArticleMapper;
+
+    @Autowired
+    private UserFavoritesService userFavoritesService;
+    @Autowired
+    private UserFavoritesMapper userFavoritesMapper;
+
+    @Autowired
+    private UserFollowersService userFollowersService;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -109,7 +119,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public ResponseResult getArticleDetail(Long id) {
+    public ResponseResult getArticleDetail(Long id,Long currentUserId) {//查询文章具体内容
         //根据id查询文章
         Article article = getById(id);
         //从redis中获取viewCount
@@ -122,6 +132,39 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
         //转换成vo
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
+        //去查用户点赞关联表看是否点赞过
+        LambdaQueryWrapper<UserLikeArticle> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserLikeArticle::getArticleid,id);
+        queryWrapper.eq(UserLikeArticle::getUserid,currentUserId);
+        List<UserLikeArticle> list = userLikeArticleService.list();
+        if (list.size()!=0){
+            articleDetailVo.setPraise(true);
+        }else {
+            articleDetailVo.setPraise(false);
+        }
+        //查用户收藏关联表看是否收藏过
+        LambdaQueryWrapper<UserFavorites> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(UserFavorites::getArticleid,id);
+        queryWrapper1.eq(UserFavorites::getUserid,currentUserId);
+        List<UserFavorites> list1 = userFavoritesService.list();
+        if (list1.size()!=0){
+            articleDetailVo.setStar(true);
+        }else {
+            articleDetailVo.setStar(false);
+        }
+        //根据作者id查具体信息
+        User author = userService.getById(article.getCreateBy());
+        UserInfoVo authorInfo = BeanCopyUtils.copyBean(author, UserInfoVo.class);
+        LambdaQueryWrapper<UserFollowers> queryWrapper2 = new LambdaQueryWrapper<>();
+        queryWrapper2.eq(UserFollowers::getFollowerid,article.getCreateBy());
+        queryWrapper2.eq(UserFollowers::getUserid,currentUserId);
+        List<UserFollowers> list2 = userFollowersService.list(queryWrapper2);
+        if (list2.size()!=0){
+            authorInfo.setFollow(true);
+        }else{
+            authorInfo.setFollow(false);
+        }
+        articleDetailVo.setAuthor(authorInfo);
         //根据分类id查询分类名
         Long categoryId = articleDetailVo.getCategoryId();
         Category category = categoryService.getById(categoryId);
@@ -216,6 +259,66 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
         return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult like(Long articleId, Long userId) {
+        //更新文章表，点赞数量+1
+        Article article = getById(articleId);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getId,articleId);
+        updateWrapper.set(Article::getPraises,article.getPraises()+1);
+        update(null,updateWrapper);
+        //更新用户点赞关联表，添加记录
+        UserLikeArticle userLikeArticle = new UserLikeArticle(userId,articleId);
+        userLikeArticleService.save(userLikeArticle);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult dislike(Long articleId, Long userId) {
+        //更新文章表，点赞数量-1
+        Article article = getById(articleId);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getId,articleId);
+        updateWrapper.set(Article::getPraises,article.getPraises()-1);
+        update(null,updateWrapper);
+        //更新用户点赞关联表，删除记录
+        LambdaUpdateWrapper<UserLikeArticle> querywrapper = new LambdaUpdateWrapper<>();
+        querywrapper.eq(UserLikeArticle::getArticleid,articleId);
+        querywrapper.eq(UserLikeArticle::getUserid,userId);
+        userLikeArticleMapper.delete(querywrapper);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult star(Long articleId, Long userId) {
+        //更新文章表，收藏+1
+        Article article = getById(articleId);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getId,articleId);
+        updateWrapper.set(Article::getStars,article.getStars()+1);
+        update(null,updateWrapper);
+        //更新用户收藏表，新增记录
+        UserFavorites userFavorites = new UserFavorites(userId,articleId);
+        userFavoritesService.save(userFavorites);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteStar(Long articleId, Long userId) {
+        //更新文章表，收藏-1
+        Article article = getById(articleId);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getId,articleId);
+        updateWrapper.set(Article::getStars,article.getStars()-1);
+        update(null,updateWrapper);
+        //更新用户收藏关联表，删除记录
+        LambdaUpdateWrapper<UserFavorites> querywrapper = new LambdaUpdateWrapper<>();
+        querywrapper.eq(UserFavorites::getArticleid,articleId);
+        querywrapper.eq(UserFavorites::getUserid,userId);
+        userFavoritesMapper.delete(querywrapper);
+        return ResponseResult.okResult();
     }
 
 

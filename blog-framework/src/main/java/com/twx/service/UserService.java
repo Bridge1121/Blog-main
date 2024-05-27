@@ -20,4 +20,8 @@ public interface UserService extends IService<User> {
     ResponseResult register(User user);
 
     ResponseResult getAvatar(Long userId);
+
+    ResponseResult follow(Long userId, Long followId);
+
+    ResponseResult cancelFollow(Long userId, Long followId);
 }

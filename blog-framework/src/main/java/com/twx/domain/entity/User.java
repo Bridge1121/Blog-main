@@ -36,6 +36,10 @@ public class User  {
     private String status;
     //邮箱
     private String email;
+    //粉丝数量
+    private Long fans;
+    //关注的用户数量
+    private Long followers;
     //手机号
     private String phonenumber;
     //用户性别（0男，1女，2未知）
@@ -52,6 +56,22 @@ public class User  {
     private Date updateTime;
     //删除标志（0代表未删除，1代表已删除）
     private Integer delFlag;
+
+    public Long getFans() {
+        return fans;
+    }
+
+    public void setFans(Long fans) {
+        this.fans = fans;
+    }
+
+    public Long getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Long followers) {
+        this.followers = followers;
+    }
 
     public Long getId() {
         return id;

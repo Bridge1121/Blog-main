@@ -39,4 +39,14 @@ public class UserController {
     public ResponseResult getAvatar(Long userId){
         return userService.getAvatar(userId);
     }
+
+    @GetMapping("/follow")
+    public ResponseResult follow(Long userId,Long followId){
+        return userService.follow(userId,followId);
+    }
+
+    @DeleteMapping("/cancelFollow")
+    public ResponseResult cancelFollow(Long userId,Long followId){
+        return userService.cancelFollow(userId,followId);
+    }
 }

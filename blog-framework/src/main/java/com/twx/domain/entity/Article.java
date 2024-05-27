@@ -41,6 +41,10 @@ public class Article {
     private String status;
     //访问量
     private Long viewCount;
+    //收藏数量
+    private Long stars;
+    //点赞数量
+    private Long praises;
 
     //是否允许评论 1是，0否
     private String isComment;
@@ -64,6 +68,21 @@ public class Article {
         this.viewCount = viewCount;
     }
 
+    public Long getStars() {
+        return stars;
+    }
+
+    public void setStars(Long stars) {
+        this.stars = stars;
+    }
+
+    public Long getPraises() {
+        return praises;
+    }
+
+    public void setPraises(Long praises) {
+        this.praises = praises;
+    }
 
     public String getStatus() {
         return status;

@@ -17,7 +17,7 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
 
-    ResponseResult getArticleDetail(Long id);
+    ResponseResult getArticleDetail(Long id,Long currentUserId);
 
     ResponseResult updateViewCount(Long id);
 
@@ -30,5 +30,13 @@ public interface ArticleService extends IService<Article> {
     ResponseResult draftArticleList(Integer pageNum, Integer pageSize, Long userId);
 
     ResponseResult searchArticle(Integer pageNum, Integer pageSize, String content);
+
+    ResponseResult like(Long articleId, Long userId);
+
+    ResponseResult dislike(Long articleId, Long userId);
+
+    ResponseResult star(Long articleId, Long userId);
+
+    ResponseResult deleteStar(Long articleId, Long userId);
 }
 

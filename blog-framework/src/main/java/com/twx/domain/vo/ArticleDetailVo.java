@@ -1,5 +1,6 @@
 package com.twx.domain.vo;
 
+import com.twx.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,57 @@ public class ArticleDetailVo {
     private String thumbnail;
     //访问量
     private Long viewCount;
+    //收藏数量
+    private Long stars;
+    //点赞数量
+    private Long praises;
+
+    private boolean isPraise;
+    private boolean isStar;
 
     private Date createTime;
+
+    private UserInfoVo author;//文章作者信息
+
+    public boolean isPraise() {
+        return isPraise;
+    }
+
+    public void setPraise(boolean praise) {
+        isPraise = praise;
+    }
+
+    public boolean isStar() {
+        return isStar;
+    }
+
+    public void setStar(boolean star) {
+        isStar = star;
+    }
+
+    public Long getStars() {
+        return stars;
+    }
+
+    public void setStars(Long stars) {
+        this.stars = stars;
+    }
+
+    public Long getPraises() {
+        return praises;
+    }
+
+    public void setPraises(Long praises) {
+        this.praises = praises;
+    }
+
+    public UserInfoVo getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserInfoVo author) {
+        this.author = author;
+    }
 
     public Long getId() {
         return id;

@@ -43,9 +43,9 @@ public class ArticleController {
         return articleService.draftArticleList(pageNum,pageSize,userId);
     }
 
-    @GetMapping("/{id}")
-    public ResponseResult getArticleDetail(@PathVariable("id") Long id){
-        return articleService.getArticleDetail(id);
+    @GetMapping("/{id}/{userId}")
+    public ResponseResult getArticleDetail(@PathVariable("id") Long id,@PathVariable("userId") Long currentUserId){
+        return articleService.getArticleDetail(id,currentUserId);
     }
 
     @PutMapping("/updateViewCount/{id}")
@@ -71,6 +71,25 @@ public class ArticleController {
     @GetMapping("/searchArticle")
     public ResponseResult searchArticle(Integer pageNum,Integer pageSize,String content){
         return articleService.searchArticle(pageNum,pageSize,content);
+    }
+
+    @GetMapping("/like")
+    public ResponseResult like(Long articleId,Long userId){//点赞文章
+        return articleService.like(articleId,userId);
+    }
+    @DeleteMapping("/dislike")
+    public ResponseResult dislike(Long articleId,Long userId){//点赞文章
+        return articleService.dislike(articleId,userId);
+    }
+
+    @GetMapping("/star")
+    public ResponseResult star(Long articleId,Long userId){//收藏文章
+        return articleService.star(articleId,userId);
+    }
+
+    @DeleteMapping("/deleteStar")
+    public ResponseResult deleteStar(Long articleId,Long userId){//取消收藏文章
+        return articleService.deleteStar(articleId,userId);
     }
 
 }
