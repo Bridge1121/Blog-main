@@ -26,7 +26,17 @@ public class UserPostingsController {
     }
 
     @GetMapping("/list")
-    public ResponseResult postingslist(Integer pageNum,Integer pageSize){
-        return userPostingsService.postingslist(pageNum,pageSize);
+    public ResponseResult postingslist(Integer pageNum,Integer pageSize,Long currentUserId){
+        return userPostingsService.postingslist(pageNum,pageSize,currentUserId);
+    }
+
+    @GetMapping("/addPrize")
+    public ResponseResult addPrize(Long currentUserId,Long postingId){
+        return userPostingsService.addPrize(currentUserId,postingId);
+    }
+
+    @DeleteMapping("/deletePrize")
+    public ResponseResult deletePrize(Long currentUserId,Long postingId){
+        return userPostingsService.deletePrize(currentUserId,postingId);
     }
 }

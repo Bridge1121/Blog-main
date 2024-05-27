@@ -664,6 +664,34 @@
             </TableInfoDTO>
           </value>
         </entry>
+        <entry key="twx_blog.blog_user_praise_postings">
+          <value>
+            <TableInfoDTO>
+              <option name="fullColumn">
+                <list>
+                  <ColumnInfoDTO>
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="userid" />
+                    <option name="type" value="java.lang.Long" />
+                  </ColumnInfoDTO>
+                  <ColumnInfoDTO>
+                    <option name="custom" value="false" />
+                    <option name="ext" value="{}" />
+                    <option name="name" value="postingid" />
+                    <option name="type" value="java.lang.Long" />
+                  </ColumnInfoDTO>
+                </list>
+              </option>
+              <option name="name" value="BlogUserPraisePostings" />
+              <option name="preName" value="blog_" />
+              <option name="saveModelName" value="blog-admin" />
+              <option name="savePackageName" value="" />
+              <option name="savePath" value="./blog-admin/src/main/java" />
+              <option name="templateGroupName" value="MybatisPlus" />
+            </TableInfoDTO>
+          </value>
+        </entry>
         <entry key="twx_blog.sys_user">
           <value>
             <TableInfoDTO>

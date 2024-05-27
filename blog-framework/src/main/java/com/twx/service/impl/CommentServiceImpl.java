@@ -8,11 +8,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.Comment;
+import com.twx.domain.entity.UserPostings;
 import com.twx.domain.entity.UserPraiseComment;
 import com.twx.domain.vo.*;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
 import com.twx.mapper.CommentMapper;
+import com.twx.mapper.UserPostingsMapper;
 import com.twx.mapper.UserPraiseCommentMapper;
 import com.twx.service.CommentService;
 import com.twx.service.UserPraiseCommentService;
@@ -44,14 +46,23 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Autowired
     private UserPraiseCommentMapper userPraiseCommentMapper;
 
+    @Autowired
+    private UserPostingsMapper userPostingsMapper;
+
 
 
 
     @Override
-    public ResponseResult commentList(Long currentUserId,Long articleId, Integer pageNum, Integer pageSize) {
+    public ResponseResult commentList(Long currentUserId,Long articleId, Integer pageNum, Integer pageSize,boolean isArticle) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getArticleId, articleId);
         queryWrapper.eq(Comment::getRootId, -1);
+        if (isArticle){//查询文章评论
+            queryWrapper.eq(Comment::getType,"0");
+
+        }else{//查询动态评论
+            queryWrapper.eq(Comment::getType,"1");
+        }
 
         Page<Comment> page = new Page<>(pageNum, pageSize);
         page(page, queryWrapper);
@@ -59,7 +70,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         List<CommentVo> commentVoList = toCommentVoList(page.getRecords());
 
         for (CommentVo commentVo : commentVoList) {
-            commentVo.setPraise(isPraise(commentVo.getId(),currentUserId));
+            commentVo.setPraise(isPraise(commentVo.getId(),currentUserId));//currentUserId是为了获取当前用户点赞过哪些评论
             PagerRepliesEnableVo children = getChildren(1,2,commentVo.getId(),currentUserId);//第一次找当前评论的子评论时只找第一页的前两条
             commentVo.setReplies(children.getReplies());
             commentVo.setCurrentPage(children.getCurrentPage());
@@ -79,6 +90,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         //评论内容不能为空
         if(!StringUtils.hasText(comment.getContent())){
             throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+        if (comment.getType().equals("1")) {//添加的是动态评论
+            UserPostings userPostings = userPostingsMapper.selectById(comment.getArticleId());
+            LambdaUpdateWrapper<UserPostings> userPostingsLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+            userPostingsLambdaUpdateWrapper.set(UserPostings::getComments,userPostings.getComments()+1);
+            userPostingsLambdaUpdateWrapper.eq(UserPostings::getId,userPostings.getId());
+            userPostingsMapper.update(null,userPostingsLambdaUpdateWrapper);
         }
         save(comment);
         return ResponseResult.okResult();

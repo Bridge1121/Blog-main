@@ -23,8 +23,17 @@ public class UserPostingsVo {
     private Date createTime;
 
     private int comments;//当前动态评论总数
+    private boolean isPraise;//判断当前用户是否对该动态点赞
 
     private Integer delFlag;
+
+    public boolean isPraise() {
+        return isPraise;
+    }
+
+    public void setPraise(boolean praise) {
+        isPraise = praise;
+    }
 
     public int getComments() {
         return comments;

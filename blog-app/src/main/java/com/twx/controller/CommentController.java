@@ -16,9 +16,9 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/commentList")
-    @ApiOperation(value = "获取评论列表",notes = "获取当前文章所有评论")
-    public ResponseResult commentList(Long currentUserId,Long articleId,Integer pageNum,Integer pageSize){
-        return commentService.commentList(currentUserId,articleId,pageNum,pageSize);
+    @ApiOperation(value = "获取评论列表",notes = "获取当前文章或动态所有评论")
+    public ResponseResult commentList(Long currentUserId,Long articleId,Integer pageNum,Integer pageSize,boolean isArticle){
+        return commentService.commentList(currentUserId,articleId,pageNum,pageSize,isArticle);
     }
 
     @GetMapping("/replyList")

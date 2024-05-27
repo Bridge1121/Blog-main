@@ -30,6 +30,7 @@ com\twx\domain\vo\UserInfoVo.class
 com\twx\handler\mybatisplus\MyMetaObjectHandler.class
 com\twx\domain\entity\Category.class
 com\twx\mapper\ArticleTagMapper.class
+com\twx\service\UserPraisePostingsService.class
 com\twx\config\RedisConfig.class
 com\twx\service\LinkService.class
 com\twx\domain\vo\UserPostingsVo.class
@@ -56,7 +57,7 @@ com\twx\config\WebConfig.class
 com\twx\domain\entity\UserPostings.class
 com\twx\constants\SystemConstants.class
 com\twx\service\TagService.class
-entity\UserPostings.class
+com\twx\mapper\UserPraisePostingsMapper.class
 com\twx\service\UploadService.class
 com\twx\domain\entity\Link.class
 com\twx\mapper\UserMapper.class
@@ -69,13 +70,14 @@ com\twx\service\UserFavoritesService.class
 com\twx\domain\entity\User.class
 com\twx\enums\AppHttpCodeEnum.class
 com\twx\service\UserPostingsService.class
+com\twx\domain\entity\UserPraisePostings.class
 com\twx\service\UserFollowersService.class
 com\twx\mapper\TagMapper.class
 com\twx\domain\vo\CommentVo.class
 com\twx\service\impl\UserFavoritesServiceImpl.class
 com\twx\domain\vo\PagerRepliesEnableVo.class
+com\twx\service\impl\UserPraisePostingsServiceImpl.class
 com\twx\utils\BeanCopyUtils.class
-mapper\UserPostingsMapper.class
 com\twx\handler\security\AccessDeniedHandlerImpl.class
 com\twx\domain\vo\HotArticleVo.class
 com\twx\mapper\UserFavoritesMapper.class
