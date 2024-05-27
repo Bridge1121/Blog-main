@@ -24,4 +24,6 @@ public interface UserService extends IService<User> {
     ResponseResult follow(Long userId, Long followId);
 
     ResponseResult cancelFollow(Long userId, Long followId);
+
+    ResponseResult followerList(Integer pageNum, Integer pageSize, Long userId);
 }

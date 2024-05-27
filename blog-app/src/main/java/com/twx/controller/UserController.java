@@ -49,4 +49,11 @@ public class UserController {
     public ResponseResult cancelFollow(Long userId,Long followId){
         return userService.cancelFollow(userId,followId);
     }
+
+    @GetMapping("/followerList")
+    @ApiOperation(value = "分页查询当前用户关注列表",notes = "查询当前用户关注列表")
+    public ResponseResult followerList(Integer pageNum,Integer pageSize,Long userId){
+        return userService.followerList(pageNum,pageSize,userId);
+    }
+
 }

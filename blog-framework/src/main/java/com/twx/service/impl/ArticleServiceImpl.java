@@ -119,6 +119,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
+    public ResponseResult starList(Integer pageNum, Integer pageSize, Long userId) {
+        //先查用户收藏关联表，得到收藏的文章id
+        LambdaQueryWrapper<UserFavorites> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserFavorites::getUserid,userId);
+        Page<UserFavorites> page = new Page<>(pageNum,pageSize);
+        userFavoritesService.page(page,queryWrapper);
+        List<UserFavorites> userFavorites = page.getRecords();
+        List<Article> articles = new ArrayList<>();
+        for (UserFavorites userFavorites1:userFavorites){
+            Article article = getById(userFavorites1.getArticleid());
+            articles.add(article);
+        }
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
+
+        return ResponseResult.okResult(new PageVo(articleListVos,page.getTotal()));
+    }
+
+    @Override
     public ResponseResult getArticleDetail(Long id,Long currentUserId) {//查询文章具体内容
         //根据id查询文章
         Article article = getById(id);
@@ -320,6 +338,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         userFavoritesMapper.delete(querywrapper);
         return ResponseResult.okResult();
     }
+
+
 
 
 }

@@ -2,10 +2,12 @@ package com.twx.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.User;
 import com.twx.domain.entity.UserFollowers;
+import com.twx.domain.vo.PageVo;
 import com.twx.domain.vo.UserInfoVo;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
@@ -15,10 +17,14 @@ import com.twx.service.UserFollowersService;
 import com.twx.service.UserService;
 import com.twx.utils.BeanCopyUtils;
 import com.twx.utils.SecurityUtils;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户表(User)表服务实现类
@@ -151,6 +157,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq(UserFollowers::getUserid,userId);
         userFollowersMapper.delete(queryWrapper);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult followerList(Integer pageNum, Integer pageSize, Long userId) {
+        //查询用户关注关联表得到关注的用户id
+        LambdaQueryWrapper<UserFollowers> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserFollowers::getUserid,userId);
+        Page<UserFollowers> page = new Page<>();
+        userFollowersService.page(page, queryWrapper);
+        List<UserFollowers> userFollowers = page.getRecords();
+        List<User> users = new ArrayList<>();
+        for (UserFollowers userFollowers1:userFollowers){
+            User user = getById(userFollowers1.getFollowerid());
+            users.add(user);
+        }
+        List<UserInfoVo> userInfoVos = BeanCopyUtils.copyBeanList(users, UserInfoVo.class);
+        userInfoVos.forEach(userInfoVo -> userInfoVo.setFollow(true));
+        return ResponseResult.okResult(new PageVo(userInfoVos,page.getTotal()));
     }
 
     private boolean emailExist(String email) {

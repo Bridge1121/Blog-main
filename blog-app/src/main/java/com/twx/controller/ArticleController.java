@@ -43,6 +43,12 @@ public class ArticleController {
         return articleService.draftArticleList(pageNum,pageSize,userId);
     }
 
+    @GetMapping("/starList")
+    @ApiOperation(value = "分页查询当前用户收藏列表",notes = "查询当前用户收藏列表")
+    public ResponseResult starList(Integer pageNum,Integer pageSize,Long userId){
+        return articleService.starList(pageNum,pageSize,userId);
+    }
+
     @GetMapping("/{id}/{userId}")
     public ResponseResult getArticleDetail(@PathVariable("id") Long id,@PathVariable("userId") Long currentUserId){
         return articleService.getArticleDetail(id,currentUserId);

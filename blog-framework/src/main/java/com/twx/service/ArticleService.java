@@ -38,5 +38,7 @@ public interface ArticleService extends IService<Article> {
     ResponseResult star(Long articleId, Long userId);
 
     ResponseResult deleteStar(Long articleId, Long userId);
+
+    ResponseResult starList(Integer pageNum, Integer pageSize, Long userId);
 }
 
