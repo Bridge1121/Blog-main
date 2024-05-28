@@ -4,6 +4,7 @@ import com.twx.domain.ResponseResult;
 import com.twx.domain.entity.UserPostings;
 import com.twx.service.UserPostingsService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,10 @@ public class UserPostingsController {
         return userPostingsService.createUserPosting(userPostings);
     }
 
-    @GetMapping("/list/{id}")
-    public ResponseResult listByUserId(@PathVariable("id") Long userId){
-        return userPostingsService.listByUserId(userId);
+    @GetMapping("/postingList")
+    @ApiOperation(value = "分页查询某个用户的动态")
+    public ResponseResult listByUserId(Integer pageNum,Integer pageSize, Long userId){
+        return userPostingsService.listByUserId(pageNum,pageSize,userId);
     }
 
     @GetMapping("/list")

@@ -15,7 +15,7 @@ public interface UserPostingsService extends IService<UserPostings> {
 
     ResponseResult createUserPosting(UserPostings userPostings);
 
-    ResponseResult listByUserId(Long userId);
+    ResponseResult listByUserId(Integer pageNum, Integer pageSize,Long userId);
 
     ResponseResult postingslist(Integer pageNum, Integer pageSize,Long currentUserId);
 

@@ -88,9 +88,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
+    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId,Long userId) {
+
         //查询条件
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        //如果有categoryId就要和查询时传入的相同
+        queryWrapper.eq(Objects.nonNull(userId),Article::getCreateBy,userId);
         //如果有categoryId就要和查询时传入的相同
         queryWrapper.eq(Objects.nonNull(categoryId) && categoryId>0,Article::getCategoryId,categoryId);
         //状态是正式发布的

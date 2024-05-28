@@ -46,12 +46,32 @@ public class UserPostingsServiceImpl extends ServiceImpl<UserPostingsMapper, Use
     }
 
     @Override
-    public ResponseResult listByUserId(Long userId) {
+    public ResponseResult listByUserId(Integer pageNum, Integer pageSize,Long userId) {
         LambdaQueryWrapper<UserPostings> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(UserPostings::getDelFlag,0);
         lambdaQueryWrapper.eq(UserPostings::getCreateBy,userId);
-        lambdaQueryWrapper.orderByDesc(UserPostings::getPraises);//按点赞数降序排序
+        lambdaQueryWrapper.orderByDesc(UserPostings::getCreateTime);//按创建时间降序排序
         List<UserPostings> userpostings = userPostingsService.list(lambdaQueryWrapper);
-        return ResponseResult.okResult(userpostings);
+        //分页查询
+        Page<UserPostings> page = new Page<>(pageNum,pageSize);
+        page(page, lambdaQueryWrapper);
+        List<UserPostings> records = page.getRecords();
+        List<UserPostingsVo> userPostingsVos = BeanCopyUtils.copyBeanList(records, UserPostingsVo.class);
+        for (UserPostingsVo vo:userPostingsVos){
+            User user = userService.getById(vo.getCreateBy());
+            vo.setCreateUserName(user.getNickName());
+            vo.setAvatar(user.getAvatar());
+            LambdaQueryWrapper<UserPraisePostings> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(UserPraisePostings::getUserid,userId);
+            queryWrapper1.eq(UserPraisePostings::getPostingid,vo.getId());
+            List<UserPraisePostings> list = userPraisePostingsService.list(queryWrapper1);
+            if (list.size()!=0){
+                vo.setPraise(true);//当前用户已经对该动态点赞过
+            }else {
+                vo.setPraise(false);
+            }
+        }
+        return ResponseResult.okResult(new PageVo(userPostingsVos,page.getTotal()));
     }
 
     @Override
@@ -60,7 +80,7 @@ public class UserPostingsServiceImpl extends ServiceImpl<UserPostingsMapper, Use
         LambdaQueryWrapper<UserPostings> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserPostings::getDelFlag,0);
         //对istop进行降序
-        queryWrapper.orderByDesc(UserPostings::getPraises);
+        queryWrapper.orderByDesc(UserPostings::getCreateTime);
         //分页查询
         Page<UserPostings> page = new Page<>(pageNum,pageSize);
         page(page, queryWrapper);

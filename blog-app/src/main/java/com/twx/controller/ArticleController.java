@@ -33,8 +33,8 @@ public class ArticleController {
 
     @GetMapping("/articleList")
     @ApiOperation(value = "分页查询某个类型文章列表",notes = "查询某类文章列表信息")
-    public ResponseResult articleList(Integer pageNum,Integer pageSize,Long categoryId){
-        return articleService.articleList(pageNum,pageSize,categoryId);
+    public ResponseResult articleList(Integer pageNum,Integer pageSize,Long categoryId,Long userId){
+        return articleService.articleList(pageNum,pageSize,categoryId,userId);
     }
 
     @GetMapping("/draftList")
@@ -42,6 +42,7 @@ public class ArticleController {
     public ResponseResult draftArticleList(Integer pageNum,Integer pageSize,Long userId){
         return articleService.draftArticleList(pageNum,pageSize,userId);
     }
+
 
     @GetMapping("/starList")
     @ApiOperation(value = "分页查询当前用户收藏列表",notes = "查询当前用户收藏列表")
