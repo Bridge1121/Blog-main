@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface CategoryService extends IService<Category> {
 
-    ResponseResult getCategoryList(String userId);
+    ResponseResult getCategoryList(Long userId);
 
-    ResponseResult addCategory(String name,String userId,String description);
+    ResponseResult addCategory(String name,Long userId,String description);
 }

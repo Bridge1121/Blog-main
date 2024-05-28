@@ -22,13 +22,13 @@ public class CategoryController {
 
     @GetMapping("/getCategoryList")
     @ApiOperation(value = "获取当前用户创建的所有文章分类")
-    public ResponseResult getCategoryList(String userId){
+    public ResponseResult getCategoryList(Long userId){
         return categoryService.getCategoryList(userId);
     }
 
     @GetMapping("/addCategory")
     @ApiOperation(value = "新增文章分类")
-    public ResponseResult addCategory(String name,String userId,String description){
+    public ResponseResult addCategory(String name,Long userId,String description){
         return categoryService.addCategory(name,userId,description);
     }
 

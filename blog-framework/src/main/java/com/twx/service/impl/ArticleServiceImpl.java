@@ -131,6 +131,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             Article article = getById(userFavorites1.getArticleid());
             articles.add(article);
         }
+        for (Article article : articles) {
+            Category category = categoryService.getById(article.getCategoryId());
+            article.setCategoryName(category.getName());
+        }
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
 
         return ResponseResult.okResult(new PageVo(articleListVos,page.getTotal()));
