@@ -24,7 +24,7 @@ public class ArticleController {
 //        return articleService.list();
 //    }
     @GetMapping("/hotArticleList")
-    @ApiOperation(value = "热门文章查询",notes = "查询热门文章列表信息")
+    @ApiOperation(value = "热门文章查询",notes = "查询热门文章排名前十的列表信息")
     public ResponseResult hotArticleList(){
         //查询热门文章，封装成ResponseResult返回
         ResponseResult result = articleService.hotArticleList();

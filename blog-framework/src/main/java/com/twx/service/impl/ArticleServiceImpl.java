@@ -69,10 +69,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         //必须是正式文章
         queryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
-        //按照浏览量排序
-        queryWrapper.orderByDesc(Article::getViewCount);
+        //按照点赞收藏排序
+        queryWrapper.orderByDesc(Article::getPraises);
+        queryWrapper.orderByDesc(Article::getStars);
         //最多查询10条
-        Page<Article> page = new Page(1,20);
+        Page<Article> page = new Page(1,10);
         page(page,queryWrapper);
         List<Article> articles = page.getRecords();
         List<HotArticleVo> articleVos = new ArrayList<>();
@@ -98,8 +99,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         queryWrapper.eq(Objects.nonNull(categoryId) && categoryId>0,Article::getCategoryId,categoryId);
         //状态是正式发布的
         queryWrapper.eq(Article::getStatus,SystemConstants.ARTICLE_STATUS_NORMAL);
-        //对istop进行降序
-        queryWrapper.orderByDesc(Article::getIsTop);
+        //对创建时间进行降序
+        queryWrapper.orderByDesc(Article::getCreateTime);
         //分页查询
         Page<Article> page = new Page<>(pageNum,pageSize);
         page(page, queryWrapper);
@@ -171,7 +172,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         LambdaQueryWrapper<UserFavorites> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(UserFavorites::getArticleid,id);
         queryWrapper1.eq(UserFavorites::getUserid,currentUserId);
-        List<UserFavorites> list1 = userFavoritesService.list();
+        List<UserFavorites> list1 = userFavoritesService.list(queryWrapper1);
         if (list1.size()!=0){
             articleDetailVo.setStar(true);
         }else {

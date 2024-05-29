@@ -23,6 +23,10 @@ public class ArticleListVo {
     private String thumbnail;
     //访问量
     private Long viewCount;
+    //收藏数量
+    private Long stars;
+    //点赞数量
+    private Long praises;
 
     private Date createTime;
 

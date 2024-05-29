@@ -12,6 +12,10 @@ public class HotArticleVo {
 
     //访问量
     private Long viewCount;
+    //收藏数量
+    private Long stars;
+    //点赞数量
+    private Long praises;
     //标题
     private String title;
 }
