@@ -30,4 +30,9 @@ public class ArticleListVo {
 
     private Date createTime;
 
+    private Long createBy;
+    //文章标签
+    private String tags;
+
+
 }

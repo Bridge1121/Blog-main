@@ -33,7 +33,7 @@ public class AddArticleDto {
     //是否允许评论 1是，0否
     private String isComment;
 
-    private List<Long> tags;
+    private String tags;
 
     public Long getId() {
         return id;
@@ -115,11 +115,11 @@ public class AddArticleDto {
         this.isComment = isComment;
     }
 
-    public List<Long> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public void setTags(List<Long> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 }

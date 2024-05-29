@@ -23,22 +23,22 @@ public class ViewCountRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //查询博客信息 id viewcount
-        List<Article> articles = articleMapper.selectList(null);
-        Map<String, Integer> viewCountMap = articles.stream()
-                .collect(Collectors.toMap(new Function<Article, String>() {
-
-                    @Override
-                    public String apply(Article article) {
-                        return article.getId().toString();
-                    }
-                }, new Function<Article, Integer>() {
-
-                    @Override
-                    public Integer apply(Article article) {
-                        return article.getViewCount().intValue();
-                    }
-                }));
-        //存储到redis中
-        redisCache.setCacheMap("article:viewCount",viewCountMap);
+//        List<Article> articles = articleMapper.selectList(null);
+//        Map<String, Integer> viewCountMap = articles.stream()
+//                .collect(Collectors.toMap(new Function<Article, String>() {
+//
+//                    @Override
+//                    public String apply(Article article) {
+//                        return article.getId().toString();
+//                    }
+//                }, new Function<Article, Integer>() {
+//
+//                    @Override
+//                    public Integer apply(Article article) {
+//                        return article.getViewCount().intValue();
+//                    }
+//                }));
+//        //存储到redis中
+//        redisCache.setCacheMap("article:viewCount",viewCountMap);
     }
 }

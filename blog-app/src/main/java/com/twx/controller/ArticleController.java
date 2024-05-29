@@ -55,10 +55,10 @@ public class ArticleController {
         return articleService.getArticleDetail(id,currentUserId);
     }
 
-    @PutMapping("/updateViewCount/{id}")
-    public ResponseResult updateViewCount(@PathVariable Long id){
-        return articleService.updateViewCount(id);
-    }
+//    @PutMapping("/updateViewCount/{id}")
+//    public ResponseResult updateViewCount(@PathVariable Long id){
+//        return articleService.updateViewCount(id);
+//    }
 
     @PostMapping("/add")
     public ResponseResult add(@RequestBody AddArticleDto articleDto){
@@ -97,6 +97,11 @@ public class ArticleController {
     @DeleteMapping("/deleteStar")
     public ResponseResult deleteStar(Long articleId,Long userId){//取消收藏文章
         return articleService.deleteStar(articleId,userId);
+    }
+
+    @GetMapping("/addViewCount")
+    public ResponseResult addViewCount(Long articleId){//收藏文章
+        return articleService.addViewCount(articleId);
     }
 
 }

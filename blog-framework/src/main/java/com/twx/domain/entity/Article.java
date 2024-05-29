@@ -46,6 +46,8 @@ public class Article {
     //点赞数量
     private Long praises;
 
+    private String tags;
+
     //是否允许评论 1是，0否
     private String isComment;
 
@@ -61,7 +63,13 @@ public class Article {
     @TableLogic
     private Integer delFlag;
 
+    public String getTags() {
+        return tags;
+    }
 
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
 
     public Article(Long id, long viewCount) {
         this.id = id;

@@ -18,4 +18,6 @@ public class HotArticleVo {
     private Long praises;
     //标题
     private String title;
+    //文章标签
+    private String tags;
 }

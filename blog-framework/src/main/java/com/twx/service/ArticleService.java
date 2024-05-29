@@ -19,7 +19,7 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult getArticleDetail(Long id,Long currentUserId);
 
-    ResponseResult updateViewCount(Long id);
+//    ResponseResult updateViewCount(Long id);
 
     ResponseResult add(AddArticleDto articleDto);
 
@@ -40,5 +40,7 @@ public interface ArticleService extends IService<Article> {
     ResponseResult deleteStar(Long articleId, Long userId);
 
     ResponseResult starList(Integer pageNum, Integer pageSize, Long userId);
+
+    ResponseResult addViewCount(Long articleId);
 }
 

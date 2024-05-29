@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * 文章表(Article)表实体类
  *
  * @author makejava
- * @since 2024-05-27 14:19:52
+ * @since 2024-05-29 17:32:56
  */
 @SuppressWarnings("serial")
 @Data
@@ -31,6 +31,8 @@ public class Article  {
     private String summary;
     //所属分类id
     private Long categoryId;
+    //文章标签
+    private String tags;
     //缩略图
     private String thumbnail;
     //是否置顶（0否，1是）

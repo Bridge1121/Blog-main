@@ -70,6 +70,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //必须是正式文章
         queryWrapper.eq(Article::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL);
         //按照点赞收藏排序
+        queryWrapper.orderByDesc(Article::getViewCount);
         queryWrapper.orderByDesc(Article::getPraises);
         queryWrapper.orderByDesc(Article::getStars);
         //最多查询10条
@@ -145,16 +146,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
+    public ResponseResult addViewCount(Long articleId) {
+        Article article = getById(articleId);
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Article::getId,articleId);
+        updateWrapper.set(Article::getViewCount,article.getViewCount()+1);
+        update(null,updateWrapper);
+        return ResponseResult.okResult();
+    }
+
+    @Override
     public ResponseResult getArticleDetail(Long id,Long currentUserId) {//查询文章具体内容
         //根据id查询文章
         Article article = getById(id);
-        //从redis中获取viewCount
-        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
-        if (viewCount!=null){
-            article.setViewCount(viewCount.longValue());
-        }else{
-            article.setViewCount(new Long(0));
-        }
+//        //从redis中获取viewCount
+//        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+//        if (viewCount!=null){
+//            article.setViewCount(viewCount.longValue());
+//        }else{
+//            article.setViewCount(new Long(0));
+//        }
 
         //转换成vo
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
@@ -162,7 +173,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         LambdaQueryWrapper<UserLikeArticle> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserLikeArticle::getArticleid,id);
         queryWrapper.eq(UserLikeArticle::getUserid,currentUserId);
-        List<UserLikeArticle> list = userLikeArticleService.list();
+        List<UserLikeArticle> list = userLikeArticleService.list(queryWrapper);
         if (list.size()!=0){
             articleDetailVo.setPraise(true);
         }else {
@@ -201,12 +212,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(articleDetailVo);
     }
 
-    @Override
-    public ResponseResult updateViewCount(Long id) {
-        //更新redis中的浏览量
-        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
-        return ResponseResult.okResult();
-    }
+//    @Override
+//    public ResponseResult updateViewCount(Long id) {
+//        //更新redis中的浏览量
+//        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+//        return ResponseResult.okResult();
+//    }
 
     @Override
     @Transactional

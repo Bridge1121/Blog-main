@@ -25,6 +25,8 @@ public class ArticleDetailVo {
     private String thumbnail;
     //访问量
     private Long viewCount;
+    //文章标签
+    private String tags;
     //收藏数量
     private Long stars;
     //点赞数量
@@ -36,6 +38,14 @@ public class ArticleDetailVo {
     private Date createTime;
 
     private UserInfoVo author;//文章作者信息
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
 
     public boolean isPraise() {
         return isPraise;
