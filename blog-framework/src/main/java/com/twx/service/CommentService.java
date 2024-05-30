@@ -22,4 +22,6 @@ public interface CommentService extends IService<Comment> {
     ResponseResult addPrize(Long currentUserId,Long commentId);
 
     ResponseResult deletePrize(Long currentUserId, Long commentId);
+
+    ResponseResult isAddComment(Long currentUserId);
 }

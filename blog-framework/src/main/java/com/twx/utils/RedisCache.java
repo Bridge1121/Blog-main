@@ -193,6 +193,10 @@ public class RedisCache
         redisTemplate.opsForHash().increment(key,hKey,v);
     }
 
+    public void decrementCacheMapValue(String key, String hKey, int v) {
+        redisTemplate.opsForHash().increment(key, hKey, -v); // 使用负数来减少值
+    }
+
     /**
      * 获取Hash中的数据
      *

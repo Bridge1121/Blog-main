@@ -42,5 +42,8 @@ public interface ArticleService extends IService<Article> {
     ResponseResult starList(Integer pageNum, Integer pageSize, Long userId);
 
     ResponseResult addViewCount(Long articleId);
+
+    ResponseResult isAddPraise(Long currentUserId);
+
 }
 

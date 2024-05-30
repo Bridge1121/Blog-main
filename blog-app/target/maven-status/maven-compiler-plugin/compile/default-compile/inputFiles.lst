@@ -1,9 +1,9 @@
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\runner\TestRunner.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\UploadController.java
-D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\runner\ViewCountRunner.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\config\SecurityConfig.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\CategoryController.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\UserController.java
+D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\runner\PraiseAndCommentCountRunner.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\controller\LinkController.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\job\TestJob.java
 D:\IDEAProject\Blog\Blog-main\blog-app\src\main\java\com\twx\job\UpdateViewCountJob.java

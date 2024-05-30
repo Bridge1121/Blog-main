@@ -156,6 +156,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
+    public ResponseResult isAddPraise(Long currentUserId) {
+        //查询当前用户的所有文章
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getCreateBy,currentUserId);
+        List<Article> articles = articleService.list(queryWrapper);
+        //遍历文章判断是否有新的点赞
+        for (Article article:articles){
+            Long lastPraises = redisCache.getCacheMapValue("article:praiseCount", article.getId().toString());
+            if (article.getPraises()>lastPraises){//证明有新的点赞了
+                //更新rediscache的数据
+                redisCache.setCacheMapValue("article:praiseCount",article.getId().toString(),article.getPraises());
+                //返回true和articleId
+                return ResponseResult.okResult(new AddPraiseVo(true,article.getId()));
+            }else if (article.getPraises()<lastPraises){//有用户取消了点赞
+                //更新rediscache的数据
+                redisCache.setCacheMapValue("article:praiseCount",article.getId().toString(),article.getPraises());
+            }
+        }
+        return ResponseResult.okResult(new AddPraiseVo(false,null));
+    }
+
+
+
+    @Override
     public ResponseResult getArticleDetail(Long id,Long currentUserId) {//查询文章具体内容
         //根据id查询文章
         Article article = getById(id);
@@ -278,11 +302,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(pageVo);
     }
 
-    //模糊查询文章
+    //模糊查询文章（文章名，内容，标签）
     @Override
     public ResponseResult searchArticle(Integer pageNum, Integer pageSize, String content) {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(Article::getTitle,content).or().like(Article::getSummary,content).or().like(Article::getContent,content);
+        queryWrapper.like(Article::getTitle,content).or().like(Article::getContent,content).or().like(Article::getTags,content);
         Page<Article> page = new Page<>(pageNum,pageSize);
         page(page, queryWrapper);
         //查询categoryName
@@ -325,6 +349,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         querywrapper.eq(UserLikeArticle::getArticleid,articleId);
         querywrapper.eq(UserLikeArticle::getUserid,userId);
         userLikeArticleMapper.delete(querywrapper);
+        //更新redis中对应 id的点赞量
+//        redisCache.decrementCacheMapValue("article:praiseCount",articleId.toString(),-1);
         return ResponseResult.okResult();
     }
 

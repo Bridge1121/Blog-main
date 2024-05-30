@@ -104,4 +104,12 @@ public class ArticleController {
         return articleService.addViewCount(articleId);
     }
 
+    @GetMapping("/isAddPraise")
+    @ApiOperation(value = "查询当前登录用户的文章是否有新的点赞")
+    public ResponseResult isAddPraise(Long currentUserId){
+        return articleService.isAddPraise(currentUserId);
+    }
+
+
+
 }

@@ -83,6 +83,7 @@ com\twx\mapper\UserPraisePostingsMapper.class
 entity\Article.class
 com\twx\service\UploadService.class
 com\twx\mapper\UserMapper.class
+com\twx\domain\vo\AddPraiseVo.class
 com\twx\domain\vo\TagVo.class
 com\twx\service\UserFavoritesService.class
 com\twx\domain\entity\User.class

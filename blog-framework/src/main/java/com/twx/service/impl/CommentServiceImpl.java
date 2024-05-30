@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.twx.constants.SystemConstants;
 import com.twx.domain.ResponseResult;
+import com.twx.domain.entity.Article;
 import com.twx.domain.entity.Comment;
 import com.twx.domain.entity.UserPostings;
 import com.twx.domain.entity.UserPraiseComment;
@@ -16,10 +17,12 @@ import com.twx.exception.SystemException;
 import com.twx.mapper.CommentMapper;
 import com.twx.mapper.UserPostingsMapper;
 import com.twx.mapper.UserPraiseCommentMapper;
+import com.twx.service.ArticleService;
 import com.twx.service.CommentService;
 import com.twx.service.UserPraiseCommentService;
 import com.twx.service.UserService;
 import com.twx.utils.BeanCopyUtils;
+import com.twx.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -48,6 +51,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Autowired
     private UserPostingsMapper userPostingsMapper;
+
+    @Autowired
+    private ArticleService articleService;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
+    private RedisCache redisCache;
 
 
 
@@ -142,6 +154,33 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         updateWrapper.set(Comment::getPrizes,comment.getPrizes()-1);
         update(null,updateWrapper);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult isAddComment(Long currentUserId) {
+        //查询当前登录用户所有的文章信息
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getCreateBy,currentUserId);
+        List<Article> articles = articleService.list(queryWrapper);
+        //遍历每篇文章查询所有评论信息
+        for (Article artice:articles) {
+            //判断是否新增评论
+            LambdaQueryWrapper<Comment> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(Comment::getArticleId,artice.getId());
+            List<Comment> comments = commentMapper.selectList(queryWrapper1);
+            Integer lasetCommentCounts = redisCache.getCacheMapValue("article:commentCount", artice.getId().toString());
+
+            if (comments.size()>lasetCommentCounts){
+                //如果有，更新rediscache中的对应文章的评论数量
+                redisCache.setCacheMapValue("article:commentCount", artice.getId().toString(),comments.size());
+                return ResponseResult.okResult(new AddPraiseVo(true,artice.getId()));
+            }else if (comments.size()<lasetCommentCounts){
+                redisCache.setCacheMapValue("article:commentCount", artice.getId().toString(),comments.size());
+            }
+
+        }
+
+        return ResponseResult.okResult(new AddPraiseVo(false,null));
     }
 
     /**

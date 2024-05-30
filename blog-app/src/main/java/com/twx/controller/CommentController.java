@@ -43,4 +43,10 @@ public class CommentController {
         return commentService.deletePrize(currentUserId,commentId);
     }
 
+    @GetMapping("/isAddComment")
+    @ApiOperation(value = "查询当前登录用户的文章是否有新的评论")
+    public ResponseResult isAddComment(Long currentUserId){
+        return commentService.isAddComment(currentUserId);
+    }
+
 }
