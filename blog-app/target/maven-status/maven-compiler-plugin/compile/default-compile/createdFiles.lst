@@ -2,6 +2,7 @@ com\twx\controller\UserController.class
 com\twx\filter\JwtAuthenticationTokenFilter.class
 com\twx\runner\PraiseAndCommentCountRunner.class
 com\twx\runner\PraiseAndCommentCountRunner$3.class
+com\twx\controller\UserHistoryController.class
 com\twx\job\UpdateViewCountJob.class
 com\twx\runner\PraiseAndCommentCountRunner$1.class
 com\twx\controller\SearchContentController.class

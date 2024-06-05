@@ -66,6 +66,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private SearchContentService searchContentService;
 
+    @Autowired
+    private UserHistoryArticleService userHistoryArticleService;
+
     @Override
     public ResponseResult hotArticleList() {
         //查询热门文章，封装成ResponseResult返回
@@ -180,6 +183,29 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return ResponseResult.okResult(new AddPraiseVo(false,null));
     }
 
+    @Override
+    public ResponseResult historyList(Integer pageNum, Integer pageSize, Long userId,String date) {
+        //先查用户历史记录关联表，得到历史浏览的文章id
+        LambdaQueryWrapper<UserHistoryArticle> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserHistoryArticle::getUserid,userId);
+        queryWrapper.eq(UserHistoryArticle::getTime,date);
+        Page<UserHistoryArticle> page = new Page<>(pageNum,pageSize);
+        userHistoryArticleService.page(page,queryWrapper);
+        List<UserHistoryArticle> userHistoryArticles = page.getRecords();
+        List<Article> articles = new ArrayList<>();
+        List<HistoryArticleListVo> historyArticleListVos = new ArrayList<>();
+        for (UserHistoryArticle userFavorites1:userHistoryArticles){
+            Article article = getById(userFavorites1.getArticleid());
+            Category category = categoryService.getById(article.getCategoryId());
+            article.setCategoryName(category.getName());
+            articles.add(article);
+            HistoryArticleListVo vo = BeanCopyUtils.copyBean(article,HistoryArticleListVo.class);
+            vo.setTime(userFavorites1.getTime());
+            historyArticleListVos.add(vo);
+        }
+
+        return ResponseResult.okResult(new PageVo(historyArticleListVos,page.getTotal()));
+    }
 
 
     @Override

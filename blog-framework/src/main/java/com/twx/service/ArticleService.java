@@ -45,5 +45,6 @@ public interface ArticleService extends IService<Article> {
 
     ResponseResult isAddPraise(Long currentUserId);
 
+    ResponseResult historyList(Integer pageNum, Integer pageSize, Long userId,String date);
 }
 

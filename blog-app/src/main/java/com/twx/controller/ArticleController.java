@@ -110,6 +110,12 @@ public class ArticleController {
         return articleService.isAddPraise(currentUserId);
     }
 
+    @GetMapping("/historyList")
+    @ApiOperation(value = "查询当前登录用户的某一天的历史浏览记录")
+    public ResponseResult historyList(Integer pageNum,Integer pageSize,Long userId,String date){
+        return articleService.historyList(pageNum,pageSize,userId,date);
+    }
+
 
 
 }
