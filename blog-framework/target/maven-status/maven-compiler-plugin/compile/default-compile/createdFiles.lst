@@ -24,6 +24,7 @@ com\twx\service\UserService.class
 com\twx\domain\entity\UserLikeArticle.class
 com\twx\handler\security\AuthenticationEntryPointImpl.class
 com\twx\mapper\CategoryMapper.class
+com\twx\domain\entity\SearchContent.class
 com\twx\service\UserPraiseCommentService.class
 com\twx\service\impl\UserLikeArticleServiceImpl.class
 com\twx\domain\vo\CommentReplyVo.class
@@ -55,16 +56,20 @@ com\twx\utils\SecurityUtils.class
 com\twx\service\impl\UserPraiseCommentServiceImpl.class
 com\twx\domain\vo\ArticleDetailVo.class
 com\twx\service\UserLikeArticleService.class
+com\twx\mapper\SearchContentMapper.class
 com\twx\mapper\UserFollowersMapper.class
 com\twx\domain\ResponseResult.class
 com\twx\domain\vo\PagerEnableVo.class
 com\twx\utils\WebUtils.class
 com\twx\domain\vo\PagerEnable.class
+com\twx\service\impl\SearchContentServiceImpl.class
 com\twx\domain\vo\PageVo.class
 com\twx\mapper\ArticleMapper.class
 com\twx\domain\entity\Category.class
 com\twx\mapper\ArticleTagMapper.class
 com\twx\config\RedisConfig.class
+entity\SearchContent.class
+mapper\SearchContentMapper.class
 com\twx\domain\vo\UserPostingsVo.class
 com\twx\service\impl\LinkServiceImpl.class
 com\twx\service\impl\UserDetailsServiceImpl.class
@@ -85,6 +90,7 @@ com\twx\service\UploadService.class
 com\twx\mapper\UserMapper.class
 com\twx\domain\vo\AddPraiseVo.class
 com\twx\domain\vo\TagVo.class
+com\twx\service\SearchContentService.class
 com\twx\service\UserFavoritesService.class
 com\twx\domain\entity\User.class
 com\twx\enums\AppHttpCodeEnum.class

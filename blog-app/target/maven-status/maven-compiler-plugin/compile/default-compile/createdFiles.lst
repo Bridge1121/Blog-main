@@ -4,6 +4,7 @@ com\twx\runner\PraiseAndCommentCountRunner.class
 com\twx\runner\PraiseAndCommentCountRunner$3.class
 com\twx\job\UpdateViewCountJob.class
 com\twx\runner\PraiseAndCommentCountRunner$1.class
+com\twx\controller\SearchContentController.class
 com\twx\config\SecurityConfig.class
 com\twx\controller\CommentController.class
 com\twx\controller\TagController.class

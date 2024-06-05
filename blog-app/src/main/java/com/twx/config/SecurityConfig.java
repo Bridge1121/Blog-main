@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -30,7 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AccessDeniedHandler accessDeniedHandler;
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -42,8 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/login").anonymous()
-                //jwt过滤器测试用，如果测试没有问题吧这里删除了
-//                .antMatchers("/link/getAllLink").authenticated()
                 //个人信息接口必须登录后才能访问
                 .antMatchers("/user/userInfo").authenticated()
                 .antMatchers("/content/tag/addTag").authenticated()

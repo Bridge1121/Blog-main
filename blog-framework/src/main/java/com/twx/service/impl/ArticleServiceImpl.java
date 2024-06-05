@@ -63,6 +63,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Autowired
     private UserFollowersService userFollowersService;
 
+    @Autowired
+    private SearchContentService searchContentService;
+
     @Override
     public ResponseResult hotArticleList() {
         //查询热门文章，封装成ResponseResult返回
@@ -319,7 +322,27 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //封装查询结果
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class);
         PageVo pageVo = new PageVo(articleListVos,page.getTotal());
+        int id = searchContentExist(content);
+
+        if (id!=-1){//搜索内容已经添加过了，就只增加查询次数
+            SearchContent searchContent = searchContentService.getById(id);
+            LambdaUpdateWrapper<SearchContent> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(SearchContent::getId,id);
+            updateWrapper.set(SearchContent::getCount,searchContent.getCount()+1);
+            searchContentService.update(null,updateWrapper);
+        }else{//没添加过，直接添加即可
+            SearchContent searchContent = new SearchContent(content,1);
+            searchContentService.save(searchContent);
+        }
         return ResponseResult.okResult(pageVo);
+    }
+
+    //判断当前搜索内容是否存在于数据库中
+    private int searchContentExist(String content) {
+        LambdaQueryWrapper<SearchContent> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SearchContent::getContent,content);
+        List<SearchContent> searchContents = searchContentService.list(queryWrapper);
+        return searchContents.size()==0?-1:searchContents.get(0).getId();
     }
 
     @Override
