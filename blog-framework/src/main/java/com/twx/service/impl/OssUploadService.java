@@ -54,7 +54,7 @@ public class OssUploadService implements UploadService {
 
             //如果判断通过上传文件到OSS
             String filePath = PathUtils.generateFilePath(originalFilename);
-            String url = uploadOss(img,filePath);//  2099/2/3/wqeqeqe.png
+            String url = uploadOss(img,filePath);
             images.add(url);
         }
         return ResponseResult.okResult(String.join(",",images));
@@ -68,7 +68,6 @@ public class OssUploadService implements UploadService {
     private String uploadOss(MultipartFile imgFile, String filePath){
         //构造一个带指定 Region 对象的配置类
         Configuration cfg = new Configuration(Region.autoRegion());
-        //...其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
         //默认不指定key的情况下，以文件内容的hash值作为文件名
         String key = filePath;
@@ -80,9 +79,7 @@ public class OssUploadService implements UploadService {
                 Response response = uploadManager.put(inputStream,key,upToken,null, null);
                 //解析上传成功的结果
                 DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                System.out.println(putRet.key);
-                System.out.println(putRet.hash);
-                return "http://scy727740.hd-bkt.clouddn.com/"+key;
+                return "http://senckjd70.hd-bkt.clouddn.com/"+key;
             } catch (QiniuException ex) {
                 Response r = ex.response;
                 System.err.println(r.toString());

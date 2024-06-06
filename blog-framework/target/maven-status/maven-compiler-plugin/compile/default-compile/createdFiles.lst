@@ -1,6 +1,5 @@
 com\twx\domain\entity\Tag.class
 com\twx\mapper\CommentMapper.class
-entity\UserHistoryArticle.class
 com\twx\service\impl\TagServiceImpl.class
 com\twx\domain\vo\BlogUserLoginVo.class
 com\twx\domain\vo\LinkVo.class
@@ -46,7 +45,6 @@ com\twx\service\impl\UserFavoritesServiceImpl.class
 com\twx\utils\BeanCopyUtils.class
 com\twx\domain\vo\HotArticleVo.class
 com\twx\mapper\UserFavoritesMapper.class
-entity\User.class
 com\twx\annotation\SystemLog.class
 com\twx\config\MbatisPlusConfig.class
 com\twx\handler\exception\GlobalExceptionHandler.class
@@ -72,8 +70,6 @@ com\twx\mapper\ArticleMapper.class
 com\twx\domain\entity\Category.class
 com\twx\mapper\ArticleTagMapper.class
 com\twx\config\RedisConfig.class
-entity\SearchContent.class
-mapper\SearchContentMapper.class
 com\twx\domain\vo\UserPostingsVo.class
 com\twx\service\impl\LinkServiceImpl.class
 com\twx\service\impl\UserDetailsServiceImpl.class
@@ -84,13 +80,11 @@ com\twx\service\impl\ArticleServiceImpl.class
 com\twx\service\UserHistoryArticleService.class
 com\twx\domain\vo\CategoryVo.class
 com\twx\service\impl\BlogLoginServiceImpl.class
-entity\UserLikeArticle.class
 com\twx\domain\entity\UserPraiseComment.class
 com\twx\service\impl\UserServiceImpl.class
 com\twx\config\WebConfig.class
 com\twx\domain\entity\UserPostings.class
 com\twx\mapper\UserPraisePostingsMapper.class
-entity\Article.class
 com\twx\service\UploadService.class
 com\twx\mapper\UserMapper.class
 com\twx\domain\vo\AddPraiseVo.class

@@ -23,4 +23,4 @@ mybatis-plus:
 oss:
   accessKey: BhHIt-6mmMnZWc71QewUT7pdXADu3LrCYWZzkM-R
   secretKey: gPAA9mLdlwWvTwSb5SsxRVqdIlRIsBsChKQxK2g7
-  bucket: twxblog
+  bucket: ttwxblog

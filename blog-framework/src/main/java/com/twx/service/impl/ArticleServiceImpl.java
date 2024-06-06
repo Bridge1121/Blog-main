@@ -203,7 +203,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             vo.setTime(userFavorites1.getTime());
             historyArticleListVos.add(vo);
         }
-
         return ResponseResult.okResult(new PageVo(historyArticleListVos,page.getTotal()));
     }
 
