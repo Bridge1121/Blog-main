@@ -12,6 +12,7 @@ import com.twx.domain.vo.*;
 import com.twx.enums.AppHttpCodeEnum;
 import com.twx.exception.SystemException;
 import com.twx.mapper.ArticleMapper;
+import com.twx.mapper.CommentMapper;
 import com.twx.mapper.UserFavoritesMapper;
 import com.twx.mapper.UserLikeArticleMapper;
 import com.twx.service.*;
@@ -25,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.management.QueryEval;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +71,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private UserHistoryArticleService userHistoryArticleService;
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -276,6 +281,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ResponseResult add(AddArticleDto articleDto) {
         Article article = BeanCopyUtils.copyBean(articleDto,Article.class);
         save(article);
+        //查询博客信息 id praiseCount
+        List<Article> articles = articleMapper.selectList(null);
+        Map<String, Long> praiseCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Long>() {
+
+                    @Override
+                    public Long apply(Article article) {
+                        return article.getPraises();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:praiseCount",praiseCountMap);
+        Map<String, Integer> commentCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Integer>() {
+
+                    @Override
+                    public Integer apply(Article article) {
+                        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(Comment::getArticleId,article.getId());
+                        List<Comment> comments = commentMapper.selectList(queryWrapper);
+                        return comments.size();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:commentCount",commentCountMap);
 //        List<ArticleTag> articleTags = articleDto.getTags().stream().map(tagId -> new ArticleTag(article.getId(), tagId)).collect(Collectors.toList());
 //        articleTagService.saveBatch(articleTags);
         return ResponseResult.okResult();
@@ -284,6 +325,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public ResponseResult deleteArticle(Long id) {
         articleService.removeById(id);
+        //查询博客信息 id praiseCount
+        List<Article> articles = articleMapper.selectList(null);
+        Map<String, Long> praiseCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Long>() {
+
+                    @Override
+                    public Long apply(Article article) {
+                        return article.getPraises();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:praiseCount",praiseCountMap);
+        Map<String, Integer> commentCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Integer>() {
+
+                    @Override
+                    public Integer apply(Article article) {
+                        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(Comment::getArticleId,article.getId());
+                        List<Comment> comments = commentMapper.selectList(queryWrapper);
+                        return comments.size();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:commentCount",commentCountMap);
         return ResponseResult.okResult();
     }
 
@@ -298,8 +375,46 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         updateWrapper.set(Article::getTitle,articleDto.getTitle());
         updateWrapper.set(Article::getThumbnail,articleDto.getThumbnail());
         updateWrapper.set(Article::getContent,articleDto.getContent());
+        updateWrapper.set(Article::getStatus,articleDto.getStatus());
         updateWrapper.eq(Article::getId,articleDto.getId());
+
         articleMapper.update(null,updateWrapper);
+        //查询博客信息 id praiseCount
+        List<Article> articles = articleMapper.selectList(null);
+        Map<String, Long> praiseCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Long>() {
+
+                    @Override
+                    public Long apply(Article article) {
+                        return article.getPraises();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:praiseCount",praiseCountMap);
+        Map<String, Integer> commentCountMap = articles.stream()
+                .collect(Collectors.toMap(new Function<Article, String>() {
+                    @Override
+                    public String apply(Article article) {
+                        return article.getId().toString();
+                    }
+                }, new Function<Article, Integer>() {
+
+                    @Override
+                    public Integer apply(Article article) {
+                        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(Comment::getArticleId,article.getId());
+                        List<Comment> comments = commentMapper.selectList(queryWrapper);
+                        return comments.size();
+                    }
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:commentCount",commentCountMap);
 //        Article newArticle = BeanCopyUtils.copyBean(articleDto,Article.class);
 //        articleMapper.updateById(newArticle);
         return ResponseResult.okResult();
